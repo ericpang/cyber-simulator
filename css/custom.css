@@ -183,3 +183,56 @@
 .radial-progress-transition {
   transition: stroke-dashoffset 0.8s ease-in-out;
 }
+
+/* Custom cyber HUD animations */
+@keyframes rotate-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.node-ring-cw {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotate-cw 16s linear infinite;
+}
+
+.node-ring-ccw {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotate-ccw 10s linear infinite;
+}
+
+@keyframes reticle-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.target-reticle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: reticle-pulse 1.2s infinite ease-in-out;
+}
+
+.flow-particle {
+  transition: fill 0.8s, opacity 0.5s;
+}
+
+.node-pulse-blue {
+  animation: pulse-node 2s infinite ease-in-out;
+  color: #3b82f6;
+}
+
+
+
+

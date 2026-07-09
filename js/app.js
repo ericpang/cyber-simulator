@@ -8,7 +8,7 @@ class AppOrchestrator {
     this.seconds = 0;
     this.maxSeconds = 300; // 5 minutes per loop
     this.cycleCount = 1;
-    this.isPlaying = true;
+    this.isPlaying = false;
     this.speedMultiplier = 1;
     this.timerId = null;
     
@@ -96,10 +96,16 @@ class AppOrchestrator {
     // Bind controls
     this.bindControls();
 
-    // Start tick loop
+    // Start tick loop in paused state
     this.currentPhase = -1;
     this.setScenario(0);
-    this.triggerTickLoop();
+    
+    // Update play/pause button UI to reflect paused state
+    const playPauseBtn = document.getElementById("ctrl-play-pause");
+    if (playPauseBtn) {
+      playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
+      playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+    }
   }
 
   bindControls() {
@@ -263,11 +269,19 @@ class AppOrchestrator {
     this.seconds++;
 
     if (this.seconds >= this.maxSeconds) {
-      // Loop ends, auto transition to next scenario!
+      // Loop ends, pause the simulation and reset the current scenario instead of auto-playing the next campaign!
       this.seconds = 0;
-      this.cycleCount++;
-      const nextScenarioId = (this.currentScenario + 1) % this.scenarios.length;
-      this.setScenario(nextScenarioId);
+      this.isPlaying = false;
+      if (this.timerId) clearTimeout(this.timerId);
+
+      // Reset play/pause button state in the DOM to reflect paused state
+      const playPauseBtn = document.getElementById("ctrl-play-pause");
+      if (playPauseBtn) {
+        playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
+        playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+      }
+
+      this.setScenario(this.currentScenario);
       return;
     }
 
