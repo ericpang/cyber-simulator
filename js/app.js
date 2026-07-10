@@ -80,13 +80,30 @@ class AppOrchestrator {
     ];
     this.isVoiceEnabled = true;
     this.selectedVoiceName = "";
+    
+    // Interactive Prompts Options & State
+    this.isInteractiveMode = false;
+    this.selectedChoiceIndex = 0;
+    this.pollData = {};
   }
 
-  init() {
+  async init() {
     // Instantiate subsystems
     this.attacker = new window.AttackerTerminal("attacker-terminal-content");
     this.cityMap = new window.CityMap("city-map-container");
     this.siem = new window.SiemDashboard("eps-chart", "threat-gauge-container", "siem-ticker-content");
+
+    // Load interactive polls configuration from abstracted file
+    try {
+      const response = await fetch("interactive_polls.json?v=102");
+      if (response.ok) {
+        this.pollData = await response.json();
+      } else {
+        console.warn("interactive_polls.json response failed.");
+      }
+    } catch (err) {
+      console.error("Failed to load interactive_polls.json config:", err);
+    }
 
     // Initialize subsystems
     this.attacker.init();
@@ -120,6 +137,47 @@ class AppOrchestrator {
       });
     }
 
+    // Interactive Prompts toggle controls
+    const interactiveToggle = document.getElementById("ctrl-interactive-toggle");
+    if (interactiveToggle) {
+      interactiveToggle.addEventListener("change", (e) => {
+        this.isInteractiveMode = e.target.checked;
+        const playPauseBtn = document.getElementById("ctrl-play-pause");
+        
+        if (this.isInteractiveMode) {
+          // Pause the simulation automatic playing
+          this.isPlaying = false;
+          if (this.timerId) clearTimeout(this.timerId);
+          
+          // Disable play/pause button and style it as paused/inactive
+          if (playPauseBtn) {
+            playPauseBtn.disabled = true;
+            playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> PAUSED`;
+            playPauseBtn.className = "px-3 py-1.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-600 font-mono text-xs flex items-center transition cursor-not-allowed opacity-50";
+          }
+          
+          // Notify operator via AI Co-Pilot
+          const copilotContent = document.getElementById("ai-copilot-content");
+          if (copilotContent) {
+            copilotContent.textContent = "[SYSTEM NOTICE]: Simulation is in INTERACTIVE PROMPTS mode. Auto-play is disabled. Click any Phase Override button below to start voting and configure custom tactics.";
+          }
+        } else {
+          // Re-enable play/pause button
+          if (playPauseBtn) {
+            playPauseBtn.disabled = false;
+            playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
+            playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+          }
+          
+          // Notify operator via AI Co-Pilot
+          const copilotContent = document.getElementById("ai-copilot-content");
+          if (copilotContent) {
+            copilotContent.textContent = "[SYSTEM NOTICE]: Interactive prompts disabled. Simulation controls restored. Click RESUME to auto-play the campaign.";
+          }
+        }
+      });
+    }
+
     // Voice selection dropdown change
     const voiceSelect = document.getElementById("ctrl-voice-select");
     if (voiceSelect) {
@@ -149,6 +207,13 @@ class AppOrchestrator {
     const playPauseBtn = document.getElementById("ctrl-play-pause");
     if (playPauseBtn) {
       playPauseBtn.addEventListener("click", () => {
+        if (this.isInteractiveMode) {
+          const copilotContent = document.getElementById("ai-copilot-content");
+          if (copilotContent) {
+            copilotContent.textContent = "[SYSTEM NOTICE]: Auto-play is disabled in INTERACTIVE PROMPTS mode. Select a phase override in the SIEM header to trigger a poll and proceed manually.";
+          }
+          return;
+        }
         this.isPlaying = !this.isPlaying;
         playPauseBtn.innerHTML = this.isPlaying 
           ? `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> PAUSE`
@@ -213,6 +278,7 @@ class AppOrchestrator {
     this.currentScenario = scenarioId;
     this.scenarioChanged = true;
     this.seconds = 0; // restart timeline from 0 for the new scenario
+    this.selectedChoiceIndex = 0; // reset choice index to default
 
     // Update Scenario buttons active class styles
     this.scenarios.forEach(sc => {
@@ -239,7 +305,21 @@ class AppOrchestrator {
 
   jumpToPhase(phaseId) {
     const phase = this.phases.find(p => p.id === phaseId);
-    if (phase) {
+    if (!phase) return;
+
+    if (this.isInteractiveMode) {
+      this.showInteractivePoll(phaseId, (choiceIndex) => {
+        // Track the chosen option
+        this.selectedChoiceIndex = choiceIndex;
+
+        // Set to phase start
+        this.seconds = phase.start;
+        this.currentPhase = -1; // force evaluation and transition
+        this.updateUI();
+        this.evaluateStateTransitions();
+      });
+    } else {
+      this.selectedChoiceIndex = 0; // reset to default in non-interactive
       this.seconds = phase.start;
       this.updateUI();
       this.evaluateStateTransitions();
@@ -249,6 +329,51 @@ class AppOrchestrator {
         this.triggerTickLoop();
       }
     }
+  }
+
+  showInteractivePoll(phaseId, callback) {
+    const modal = document.getElementById("interactive-poll-modal");
+    const questionText = document.getElementById("poll-question-text");
+    const choicesContainer = document.getElementById("poll-choices-container");
+    
+    if (!modal || !questionText || !choicesContainer) return;
+    
+    // Read from currentScenario's pollData
+    const scenarioPolls = this.pollData[this.currentScenario];
+    if (!scenarioPolls) return;
+    const poll = scenarioPolls[phaseId];
+    if (!poll) return;
+    
+    questionText.textContent = poll.question;
+    choicesContainer.innerHTML = "";
+    
+    poll.choices.forEach((choice, index) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "w-full text-left p-4 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-blue-500/60 hover:bg-blue-950/30 text-neutral-300 hover:text-blue-400 transition duration-200 flex flex-col gap-2 focus:outline-none cursor-pointer";
+      
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "text-sm font-bold font-mono tracking-wide";
+      titleSpan.textContent = choice.text;
+      
+      const descSpan = document.createElement("span");
+      descSpan.className = "text-xs text-neutral-400 font-mono leading-normal";
+      descSpan.textContent = choice.desc;
+      
+      btn.appendChild(titleSpan);
+      btn.appendChild(descSpan);
+      
+      btn.addEventListener("click", () => {
+        // Hide modal
+        modal.classList.add("hidden");
+        // Trigger callback with selected choice index
+        callback(index);
+      });
+      
+      choicesContainer.appendChild(btn);
+    });
+    
+    modal.classList.remove("hidden");
   }
 
   triggerTickLoop() {
@@ -332,9 +457,9 @@ class AppOrchestrator {
       }
 
       // Trigger subsystems state change
-      this.attacker.triggerPhase(phase.id, this.currentScenario);
-      this.cityMap.triggerPhase(phase.id, this.currentScenario);
-      this.siem.triggerPhase(phase.id, this.currentScenario);
+      this.attacker.triggerPhase(phase.id, this.currentScenario, this.selectedChoiceIndex);
+      this.cityMap.triggerPhase(phase.id, this.currentScenario, this.selectedChoiceIndex);
+      this.siem.triggerPhase(phase.id, this.currentScenario, this.selectedChoiceIndex);
 
       // Voice prompt announcement
       this.announcePhase(phase.id);

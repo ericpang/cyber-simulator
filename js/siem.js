@@ -232,9 +232,10 @@ class SiemDashboard {
     }, intervalTime);
   }
 
-  triggerPhase(phase, scenarioId = 0) {
+  triggerPhase(phase, scenarioId = 0, optionIndex = 0) {
     this.currentPhase = phase;
     this.currentScenario = scenarioId;
+    this.currentOptionIndex = optionIndex;
     
     // Color configurations based on phase
     let color = '#10b981'; // Green

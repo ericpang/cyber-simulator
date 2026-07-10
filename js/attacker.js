@@ -58,10 +58,11 @@ class AttackerTerminal {
   /**
    * Main entry point to transition terminal script to a specific phase and scenario
    */
-  triggerPhase(phase, scenarioId = 0) {
-    if (this.currentPhase === phase && this.currentScenario === scenarioId) return;
+  triggerPhase(phase, scenarioId = 0, optionIndex = 0) {
+    if (this.currentPhase === phase && this.currentScenario === scenarioId && this.currentOptionIndex === optionIndex) return;
     this.currentPhase = phase;
     this.currentScenario = scenarioId;
+    this.currentOptionIndex = optionIndex;
     this.clear();
 
     // Setup color based on phase
@@ -80,11 +81,11 @@ class AttackerTerminal {
     }
 
     if (scenarioId === 0) {
-      this.loadScenario0(scripts, phase);
+      this.loadScenario0(scripts, phase, optionIndex);
     } else if (scenarioId === 1) {
-      this.loadScenario1(scripts, phase);
+      this.loadScenario1(scripts, phase, optionIndex);
     } else if (scenarioId === 2) {
-      this.loadScenario2(scripts, phase);
+      this.loadScenario2(scripts, phase, optionIndex);
     }
 
     this.queue = scripts;
@@ -92,7 +93,102 @@ class AttackerTerminal {
   }
 
   // --- SCENARIO 0: Substation Telemetry (Modbus) ---
-  loadScenario0(scripts, phase) {
+  loadScenario0(scripts, phase, optionIndex = 0) {
+    if (optionIndex === 1) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Activating high-frequency telemetry scan...\n', delay: 100 },
+            { type: 'cmd', text: 'ping -i 0.2 -c 10 192.168.42.50' },
+            { type: 'out', text: 'PING 192.168.42.50 (192.168.42.50) 56(84) bytes of data.\n', delay: 100 },
+            { type: 'out', text: '64 bytes from 192.168.42.50: icmp_seq=1 ttl=64 time=0.45 ms\n', delay: 100 },
+            { type: 'out', text: '[+] 10 packets transmitted, 10 received, 0% packet loss.\n', delay: 100 },
+            { type: 'out', text: '[+] Aggressive polling baseline established.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Mass port sweep initiated targeting Modbus Port 502.\n', delay: 100 },
+            { type: 'cmd', text: 'masscan -p502 192.168.42.0/24 --rate=1000' },
+            { type: 'out', text: 'Starting masscan v1.3 ( https://github.com/robertdavidgraham/masscan )\n', delay: 300 },
+            { type: 'out', text: 'Discovered open port 502/tcp on 192.168.42.50\n', delay: 200 },
+            { type: 'out', text: '[+] SCADA controller discovered on PLC network. Port 502 open.\n', delay: 100 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] EXPLOITING PLC GATEWAY BUFFER OVERFLOW...\n', delay: 100 },
+            { type: 'cmd', text: 'python3 exploit.py -t 192.168.42.50 -p 502 -o 0x7ffd5e2a' },
+            { type: 'out', text: '[*] Sending buffer size 2048 to Modbus interface...\n', delay: 300 },
+            { type: 'out', text: '[+] Payload accepted. Hijacking instruction pointer...\n', delay: 200 },
+            { type: 'out', text: '[+] Command Shell active: root@plc-gateway:/#\n', delay: 200 },
+            { type: 'cmd', text: 'killall modbus_server' }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'whoami' },
+            { type: 'out', text: '\n[*] Executing remote commands... delay 5.4s\n', delay: 400 },
+            { type: 'out', text: '[!] WARNING: Target coordinates changed to 192.168.42.150 (DECOY).\n', delay: 400 },
+            { type: 'out', text: '[-] Access denied. Honeypot interaction detected.\n', delay: 300 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Resetting target PLC controllers...\n', delay: 100 },
+            { type: 'out', text: '[*] Deploying trusted Golden Image backup... DONE\n', delay: 200 },
+            { type: 'out', text: '[+] System restored to factory defaults.\n', delay: 100 }
+          );
+          break;
+      }
+      return;
+    }
+    if (optionIndex === 2) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Auditing TLS tunnels routing telemetry logs...\n', delay: 100 },
+            { type: 'cmd', text: 'openssl s_client -connect 192.168.42.10:443' },
+            { type: 'out', text: 'CONNECTED(00000003)\ndepth=1 C = US, O = Let\'s Encrypt, CN = R3\n', delay: 150 },
+            { type: 'out', text: '[+] SSL handshake completed. Cipher: ECDHE-RSA-AES256-GCM-SHA384\n', delay: 150 },
+            { type: 'out', text: '[+] Encrypted VPN tunnel integrity verified.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Phishing recon vector running.\n', delay: 100 },
+            { type: 'cmd', text: 'gophish -c config.json --template grid_update' },
+            { type: 'out', text: '[*] Establishing tracking server on port 3333...\n', delay: 300 },
+            { type: 'out', text: '[+] Email clicked by power-operator-01@smartcity.local\n', delay: 250 },
+            { type: 'out', text: '[+] Operator credentials harvested: user=admin, pass=engineering123\n', delay: 100 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] INITIATING SCADA REGISTRY WIPE...\n', delay: 100 },
+            { type: 'cmd', text: 'ssh root@192.168.42.50 "rm -rf /etc/scada/config/*"' },
+            { type: 'out', text: '[*] Deleting relay calibration mappings...\n', delay: 300 },
+            { type: 'out', text: '[!] WARNING: Relays offline. Grid controllers unresponsive.\n', delay: 200 }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'ssh root@gateway' },
+            { type: 'out', text: '\n[-] Connection terminated by host. Reason: Access Token Revoked.\n', delay: 350 },
+            { type: 'out', text: '[-] Connection closed.\n', delay: 100 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Hardening firewall rule policies...\n', delay: 100 },
+            { type: 'out', text: '[-] Blocking outbound port 502 traffic... DONE\n', delay: 150 },
+            { type: 'out', text: '[+] Subnet security baseline restored.\n', delay: 100 }
+          );
+          break;
+      }
+      return;
+    }
+
     switch(phase) {
       case 0:
         scripts.push(
@@ -177,7 +273,86 @@ class AttackerTerminal {
   }
 
   // --- SCENARIO 1: Transit Hub Signal Hijack (Web API Command Injection) ---
-  loadScenario1(scripts, phase) {
+  loadScenario1(scripts, phase, optionIndex = 0) {
+    if (optionIndex === 1) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Starting subway switch telemetry scan...\n', delay: 100 },
+            { type: 'cmd', text: 'nmap -p 8080 192.168.42.80' },
+            { type: 'out', text: 'PORT     STATE SERVICE\n8080/tcp open  http-proxy\n', delay: 200 },
+            { type: 'out', text: '[+] Track switch console interface active.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Web management console brute-force initiated.\n', delay: 100 },
+            { type: 'cmd', text: 'hydra -l admin -P transit_pass.txt http-post-form://192.168.42.80/login' },
+            { type: 'out', text: '[+] [80/http] host: 192.168.42.80 login: admin pass: sysadmin321 [SUCCESS]\n', delay: 300 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] INJECTING REVERSE SHELL VIA ACTIVE SESSION...\n', delay: 100 },
+            { type: 'cmd', text: 'curl -H "Cookie: session=sysadmin321" http://192.168.42.80/api/spawn_shell' },
+            { type: 'out', text: '[*] Reverse shell established: root@transit-sig-ctrl:/#\n', delay: 200 }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'iptables -L' },
+            { type: 'out', text: '\n[-] Connection lost. Honeypot decoy target triggered.\n', delay: 300 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Restoring signaling databases from VM snapshot...\n', delay: 100 },
+            { type: 'out', text: '[+] VM snapshot deployment successful.\n', delay: 200 }
+          );
+          break;
+      }
+      return;
+    }
+    if (optionIndex === 2) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Starting platform CCTV integrity audit...\n', delay: 100 },
+            { type: 'cmd', text: 'curl -I http://192.168.42.80/platform/cctv_loop.mp4' },
+            { type: 'out', text: 'HTTP/1.1 200 OK\nContent-Type: video/mp4\n', delay: 150 },
+            { type: 'out', text: '[+] Platform feed loop validated.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Phishing transit operator session...\n', delay: 100 },
+            { type: 'cmd', text: 'python3 send_operator_phish.py' },
+            { type: 'out', text: '[+] Phishing request sent. Session token hijacked.\n', delay: 250 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] INITIATING DENIAL-OF-SERVICE ON API GATEWAY...\n', delay: 100 },
+            { type: 'cmd', text: 'hping3 -S -p 80 --flood 192.168.42.80' },
+            { type: 'out', text: '[!] Alert: Signaling API unresponsive. Fail-safe locks active.\n', delay: 200 }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'exit' },
+            { type: 'out', text: '\n[-] Connection refused. Session JWT tokens purged.\n', delay: 350 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Patching API endpoint query validation...\n', delay: 100 },
+            { type: 'out', text: '[+] API hotfix compiled and deployed.\n', delay: 150 }
+          );
+          break;
+      }
+      return;
+    }
+
     switch(phase) {
       case 0:
         scripts.push(
@@ -244,7 +419,88 @@ class AttackerTerminal {
   }
 
   // --- SCENARIO 2: Hospital ER Ransomware (SMB Backdoor Cryptolocker) ---
-  loadScenario2(scripts, phase) {
+  loadScenario2(scripts, phase, optionIndex = 0) {
+    if (optionIndex === 1) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Starting database telemetry loop scan...\n', delay: 100 },
+            { type: 'cmd', text: 'ping -c 4 192.168.42.90' },
+            { type: 'out', text: '64 bytes from 192.168.42.90: icmp_seq=1 ttl=128 time=1.24 ms\n', delay: 200 },
+            { type: 'out', text: '[+] Database host online. Latency nominal.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Checking SMB protocol vulnerabilities on target...\n', delay: 100 },
+            { type: 'cmd', text: 'nmap --script smb-vuln-ms17-010 -p 445 192.168.42.90' },
+            { type: 'out', text: 'Host is vulnerable to MS17-010 (EternalBlue)\n', delay: 300 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] EXPLOITING ETERNALBLUE SMB BACKDOOR...\n', delay: 100 },
+            { type: 'cmd', text: 'msfconsole -x "use exploit/windows/smb/ms17_010_eternalblue; set RHOSTS 192.168.42.90; run"' },
+            { type: 'out', text: '[+] Meterpreter session 1 opened (10.10.14.90 -> 192.168.42.90:445)\n', delay: 300 },
+            { type: 'cmd', text: 'getsystem' },
+            { type: 'out', text: '...got system via Named Pipe Impersonation (NT AUTHORITY\\SYSTEM)\n', delay: 250 }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'shell' },
+            { type: 'out', text: '\n[-] Connection lost. Host isolated from database segment.\n', delay: 300 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Pulling database backups from offline cold storage...\n', delay: 100 },
+            { type: 'out', text: '[+] Backup restoration verification complete.\n', delay: 200 }
+          );
+          break;
+      }
+      return;
+    }
+    if (optionIndex === 2) {
+      switch(phase) {
+        case 0:
+          scripts.push(
+            { type: 'out', text: '[*] Starting HVAC environment telemetry scan...\n', delay: 100 },
+            { type: 'cmd', text: 'curl -s http://192.168.42.90:8001/hvac/status' },
+            { type: 'out', text: '{"temp": 18.5, "fan": "AUTO", "compressor": "ON"}\n', delay: 150 },
+            { type: 'out', text: '[+] HVAC systems reporting normal environment registers.\n', delay: 100 }
+          );
+          break;
+        case 1:
+          scripts.push(
+            { type: 'out', text: '[!] Initiating receptionist VPN credential stuffing scan...\n', delay: 100 },
+            { type: 'cmd', text: 'python3 stuffing.py --portal vpn.hospital.local --db leaks.txt' },
+            { type: 'out', text: '[+] Harvested valid session: reception_user / winter_2026!\n', delay: 250 }
+          );
+          break;
+        case 2:
+          scripts.push(
+            { type: 'out', text: '[!] ACCESSING HVAC CENTRAL REGISTER SWITCHES...\n', delay: 100 },
+            { type: 'cmd', text: 'curl -X POST http://192.168.42.90:8001/hvac/config -d "compressor=OFF&fan=OFF"' },
+            { type: 'out', text: '[!] Alert: HVAC system cooling loop disabled. High temp warning.\n', delay: 200 }
+          );
+          break;
+        case 3:
+          scripts.push(
+            { type: 'cmd', text: 'exit' },
+            { type: 'out', text: '\n[-] Connection dropped. Receptionist VPN session invalidated.\n', delay: 350 }
+          );
+          break;
+        case 4:
+          scripts.push(
+            { type: 'out', text: '[!] Applying MS17-010 EternalBlue patch...\n', delay: 100 },
+            { type: 'out', text: '[+] Security update installed. Endpoints sanitized.\n', delay: 150 }
+          );
+          break;
+      }
+      return;
+    }
+
     switch(phase) {
       case 0:
         scripts.push(

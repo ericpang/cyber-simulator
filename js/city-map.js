@@ -519,13 +519,14 @@ class CityMap {
   /**
    * Main phase update entry point
    */
-  triggerPhase(phase, scenarioId = 0) {
+  triggerPhase(phase, scenarioId = 0, optionIndex = 0) {
     if (this.currentScenario !== scenarioId) {
       this.currentScenario = scenarioId;
       this.container.innerHTML = this.renderSVG(scenarioId);
       this.setupNodesTooltip();
     }
     this.currentPhase = phase;
+    this.currentOptionIndex = optionIndex;
 
     const nodeThreat = document.getElementById("node-threat");
     const nodeHq = document.getElementById("node-hq");

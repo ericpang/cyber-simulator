@@ -1,0 +1,128 @@
+{
+  "0": {
+    "0": {
+      "question": "Which Power Grid baseline configuration should be initiated?",
+      "choices": [
+        { "text": "Standard SCADA Modbus Telemetry Loop", "desc": "Monitor Modbus PLC relays and standard network telemetry." },
+        { "text": "High-Frequency Relay Status Monitoring", "desc": "Enable aggressive telemetry sampling on Substation Alpha." },
+        { "text": "Encrypted VPN Tunnel Integrity Check", "desc": "Audit TLS tunnels routing telemetry logs to Corp-HQ." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "SSH Credential Brute-Force (Hydra)", "desc": "Launch brute-force targeting corporate external gateway." },
+        { "text": "Mass Port Sweep targeting Modbus Port 502", "desc": "Scan grid subnet to locate active SCADA controllers." },
+        { "text": "Social Engineering Phishing to Corporate Staff", "desc": "Dispatch tailored update email to harvest operator credentials." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "PLC Modbus Relay Override (Trip Main Breaker)", "desc": "Write register 40001 command via Metasploit to black out the substation." },
+        { "text": "Buffer Overflow Exploit on Gateway Server", "desc": "Inject raw overflow shellcode to hijack Gateway root access." },
+        { "text": "SCADA Registry Wipe & Config Deletion", "desc": "Connect via SSH and erase relay calibration configurations." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "SOAR Automated VLAN Isolation", "desc": "Isolate PLC relays and lock firewall routing tables immediately." },
+        { "text": "Deploy Decoy PLC Honeypots to Misdirect Traffic", "desc": "Spin up duplicate Modbus hosts and reroute attacker packets." },
+        { "text": "Revoke Corporate VPN Access & Rotate Keys", "desc": "Instantly revoke credentials and restart corporate firewall rules." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Clear Forensic Logs & Rotate Threat Indices", "desc": "Collect forensic logs, archive, and stand by for next campaign." },
+        { "text": "Restore PLC Firmware to Trusted Golden Image", "desc": "Re-flash substation firmware and verify integrity coefficients." },
+        { "text": "Ad-Hoc Firewall Hardening & Rule Audit", "desc": "Apply strict ingress rules and audit Modbus control pathways." }
+      ]
+    }
+  },
+  "1": {
+    "0": {
+      "question": "Which Transit System baseline configuration should be initiated?",
+      "choices": [
+        { "text": "Metro Train Signaling Loop Status API", "desc": "Monitor train signaling web service ports and logs." },
+        { "text": "Subway Rail Switch Status Telemetry Scan", "desc": "Verify track configuration switches and hardware interfaces." },
+        { "text": "Central Platform CCTV Feed Integrity Audit", "desc": "Ensure platform video streams and storage networks are secure." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "Web API Directory Discovery (Nikto Scan)", "desc": "Scan Transit Hub APIs for unauthenticated query parameters." },
+        { "text": "Brute-force Transit Web Management Console", "desc": "Target administrative panel on port 80 with wordlist." },
+        { "text": "Phishing Transit Operator Credentials", "desc": "Simulate a fake schedule update notification to signal operators." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "API Command Injection Shell (Lock Signals Red)", "desc": "Inject reverse shell payload to override track switch controllers." },
+        { "text": "Reverse Shell Spawn via API Session Hijack", "desc": "Steal active operator cookie and spin up reverse shell listener." },
+        { "text": "Denial-of-Service Flood on Train Switch Relays", "desc": "Saturate signaling API gateway to force safety lockouts." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "Firewall Rules Quarantine of API Subnet", "desc": "Isolate transit signaling servers and block external API calls." },
+        { "text": "Deploy Decoy API Endpoints (Honeypot Diversion)", "desc": "Divert shell queries to simulated backend sandbox interfaces." },
+        { "text": "Kill Session Tokens & Force Operator Logout", "desc": "Revoke active administrator JWTs and enforce local access policies." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Purge Web Shell History & Restart API Service", "desc": "Delete bash logs, rotate system tokens, and restart server nodes." },
+        { "text": "Restore API Servers from Backup Images", "desc": "Revert VM snapshot to clean state prior to exploit timestamp." },
+        { "text": "Patch API Endpoints & Enable JWT Verification", "desc": "Apply input validation code patch and activate API filters." }
+      ]
+    }
+  },
+  "2": {
+    "0": {
+      "question": "Which Hospital ER baseline configuration should be initiated?",
+      "choices": [
+        { "text": "Active Directory SMB Share Telemetry Loop", "desc": "Monitor patient database queries and SMB share logs." },
+        { "text": "Patient Telemetry Databases Health Scan", "desc": "Verify health telemetry records and DB write latencies." },
+        { "text": "HVAC System Environmental Registry Audit", "desc": "Confirm environment controllers and airflow relays are normal." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "Spear-Phishing Attachment (Macro Delivery)", "desc": "Send phishing email with custom document macro to ER staff." },
+        { "text": "Nmap SMB Vulnerability Discovery (EternalBlue Check)", "desc": "Scan hospital subnets for unpatched EternalBlue exposures." },
+        { "text": "External Network Credential Stuffing Campaign", "desc": "Pivot through receptionist VPN portal using leaked databases." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "Cryptolocker Ransomware (Encrypt Medical Databases)", "desc": "Upload locker.exe and encrypt ER database + HVAC registers." },
+        { "text": "Privilege Escalation & Active Directory Takeover", "desc": "Bypass UAC controls, extract credentials, and seize Domain Controller." },
+        { "text": "HVAC Ventilation Registers Shutdown & Lock", "desc": "Corrupt environment controllers to overheat sensitive server room." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "VLAN Isolation & SMB Firewall Quarantine", "desc": "Isolate hospital ER database and block SMB port 445 network-wide." },
+        { "text": "Host Containment & Patient Database Isolation", "desc": "Quarantine infected endpoint nodes and spin down DB network card." },
+        { "text": "AD Account Revocation & Access Policy Freeze", "desc": "Disable compromised reception credentials and enforce policy restrictions." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Wipe Ransomware residues & Harden SMB Ports", "desc": "Wipe locker executables, patch endpoints, and audit SMB routing." },
+        { "text": "Restore Database Files from Offline Cold Storage", "desc": "Pull clean database copies from physical backup vaults." },
+        { "text": "Patch MS17-010 Vulnerability on Workstations", "desc": "Install security updates on all medical tablets and endpoints." }
+      ]
+    }
+  }
+}
