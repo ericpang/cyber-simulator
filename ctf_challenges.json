@@ -1,0 +1,71 @@
+{
+  "0": {
+    "1": {
+      "title": "Challenge Red-01: Network Port Scan Recon",
+      "desc": "The adversary has launched an initial scan targeting Substation Alpha. Check the threat warning or network details. Identify the target IP address of Substation Alpha to establish connection details.",
+      "hint": "Look at the Attacker Terminal's header line '[+] TARGET SCOPE: 192.168.x.x' or check the live logs.",
+      "flag": "192.168.42.50",
+      "points": 50
+    },
+    "2": {
+      "title": "Challenge Red-02: PLC Breaker Override Exploit",
+      "desc": "The attacker has pivoted into the OT network. They are running a Metasploit module to write registry coils. Identify the Modbus register coil address tripped to shut down the power grid.",
+      "hint": "Check the exploit description or the attacker script. Look for a 5-digit number beginning with 4.",
+      "flag": "40001",
+      "points": 100
+    },
+    "3": {
+      "title": "Challenge Blue-03: VLAN Containment & Isolation",
+      "desc": "A critical breach is active! We must trigger an incident response to quarantine the attacker. Find the VLAN identifier that has been isolated to contain the threat.",
+      "hint": "Look at the terminal logs or check the telemetry grid's quarantined network link. The isolated VLAN is labeled starting with VLAN_.",
+      "flag": "VLAN_10",
+      "points": 150
+    }
+  },
+  "1": {
+    "1": {
+      "title": "Challenge Red-04: API Endpoint Discovery",
+      "desc": "The attacker is scanning the web services interface of the Metro Transit platform. Identify the scanning tool name used to discover unauthenticated REST API endpoints.",
+      "hint": "Review the live SIEM event logs or the attacker terminal scan. It is a well-known vulnerability scanner.",
+      "flag": "nikto",
+      "points": 50
+    },
+    "2": {
+      "title": "Challenge Red-05: Signal Hijack Command Injection",
+      "desc": "The attacker found a vulnerable API. They are sending unauthorized payload overrides. Identify the vulnerable endpoint base path (URL path) being targeted.",
+      "hint": "Look at the attacker command `/api/v1/signal` or the live web server access logs.",
+      "flag": "/api/v1/signal",
+      "points": 100
+    },
+    "3": {
+      "title": "Challenge Blue-06: VPN Certificate Revocation",
+      "desc": "The signal hijack is underway. Security teams are rotating keys and revoking compromised tokens. What is the firewall certification status keyword applied to the attacker session?",
+      "hint": "Check the terminal feedback in Phase 3 or the SIEM dashboard status indicators. It is in all caps: REVOKED.",
+      "flag": "REVOKED",
+      "points": 150
+    }
+  },
+  "2": {
+    "1": {
+      "title": "Challenge Red-07: ER SMB Vulnerability Scan",
+      "desc": "The attacker is scanning hospital systems for legacy file-sharing ports. Identify the Microsoft security bulletin identifier or CVE ID of the EternalBlue SMB vulnerability exploited.",
+      "hint": "Standard EternalBlue CVE is CVE-2017-0144.",
+      "flag": "CVE-2017-0144",
+      "points": 50
+    },
+    "2": {
+      "title": "Challenge Red-08: Cryptolocker Ransomware Extension",
+      "desc": "Ransomware payload is active. Hospital database files are locked. What is the extension appended to the encrypted telemetry files?",
+      "hint": "Check the ransomware alerts in Panel 3 or the attacker CLI feedback. Look for the file extension name (starting with a dot).",
+      "flag": ".cryptolocker",
+      "points": 100
+    },
+    "3": {
+      "title": "Challenge Blue-09: Golden Image Firmware Recovery",
+      "desc": "Incident response is restoring backup systems. Find the recovery target profile name used to re-flash compromised consoles.",
+      "hint": "Check the restoration logs. Look for the two-word identifier starting with GOLDEN_.",
+      "flag": "GOLDEN_IMAGE",
+      "points": 150
+    }
+  }
+}

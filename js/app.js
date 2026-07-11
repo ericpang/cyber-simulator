@@ -85,6 +85,12 @@ class AppOrchestrator {
     this.isInteractiveMode = false;
     this.selectedChoiceIndex = 0;
     this.pollData = {};
+
+    // CTF Mode Options & State
+    this.isCtfMode = false;
+    this.ctfScore = 0;
+    this.ctfChallenges = {};
+    this.solvedFlags = {}; // key format: `${scenarioId}-${phaseId}` -> true
   }
 
   async init() {
@@ -103,6 +109,18 @@ class AppOrchestrator {
       }
     } catch (err) {
       console.error("Failed to load interactive_polls.json config:", err);
+    }
+
+    // Load CTF challenges configuration
+    try {
+      const response = await fetch("ctf_challenges.json?v=102");
+      if (response.ok) {
+        this.ctfChallenges = await response.json();
+      } else {
+        console.warn("ctf_challenges.json response failed.");
+      }
+    } catch (err) {
+      console.error("Failed to load ctf_challenges.json config:", err);
     }
 
     // Initialize subsystems
@@ -145,6 +163,12 @@ class AppOrchestrator {
         const playPauseBtn = document.getElementById("ctrl-play-pause");
         
         if (this.isInteractiveMode) {
+          if (this.isCtfMode) {
+            this.isCtfMode = false;
+            const ctfToggle = document.getElementById("ctrl-ctf-toggle");
+            if (ctfToggle) ctfToggle.checked = false;
+            this.toggleCtfMode(false);
+          }
           // Pause the simulation automatic playing
           this.isPlaying = false;
           if (this.timerId) clearTimeout(this.timerId);
@@ -174,6 +198,43 @@ class AppOrchestrator {
           if (copilotContent) {
             copilotContent.textContent = "[SYSTEM NOTICE]: Interactive prompts disabled. Simulation controls restored. Click RESUME to auto-play the campaign.";
           }
+        }
+      });
+    }
+
+    // CTF Mode toggle controls
+    const ctfToggle = document.getElementById("ctrl-ctf-toggle");
+    if (ctfToggle) {
+      ctfToggle.addEventListener("change", (e) => {
+        this.toggleCtfMode(e.target.checked);
+      });
+    }
+
+    // CTF Hint button
+    const ctfHintBtn = document.getElementById("ctf-hint-btn");
+    if (ctfHintBtn) {
+      ctfHintBtn.addEventListener("click", () => {
+        const hintText = document.getElementById("ctf-hint-text");
+        if (hintText) {
+          hintText.classList.toggle("hidden");
+        }
+      });
+    }
+
+    // CTF Submit button
+    const ctfSubmitBtn = document.getElementById("ctf-submit-btn");
+    if (ctfSubmitBtn) {
+      ctfSubmitBtn.addEventListener("click", () => {
+        this.submitCtfFlag();
+      });
+    }
+
+    // CTF Flag input enter key
+    const ctfFlagInput = document.getElementById("ctf-flag-input");
+    if (ctfFlagInput) {
+      ctfFlagInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          this.submitCtfFlag();
         }
       });
     }
@@ -300,6 +361,10 @@ class AppOrchestrator {
     if (this.isPlaying) {
       if (this.timerId) clearTimeout(this.timerId);
       this.triggerTickLoop();
+    }
+
+    if (this.isCtfMode) {
+      this.updateCtfConsole();
     }
   }
 
@@ -737,6 +802,193 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
     if (!this.selectedVoiceName && voiceSelect.value === "" && voiceSelect.children.length > 1) {
       this.selectedVoiceName = voiceSelect.children[1].value;
       voiceSelect.children[1].selected = true;
+    }
+  }
+
+  toggleCtfMode(enabled) {
+    this.isCtfMode = enabled;
+    const aiContainer = document.getElementById("ai-copilot-container");
+    const ctfContainer = document.getElementById("ctf-console-container");
+    const scoreContainer = document.getElementById("ctf-score-container");
+    const interactiveToggle = document.getElementById("ctrl-interactive-toggle");
+    const playPauseBtn = document.getElementById("ctrl-play-pause");
+
+    if (enabled) {
+      // 1. Turn off Interactive Prompts
+      if (this.isInteractiveMode) {
+        this.isInteractiveMode = false;
+        if (interactiveToggle) interactiveToggle.checked = false;
+      }
+
+      // 2. Hide AI Co-pilot, show CTF Console and Scoreboard
+      if (aiContainer) aiContainer.classList.add("hidden");
+      if (ctfContainer) ctfContainer.classList.remove("hidden");
+      if (scoreContainer) scoreContainer.classList.remove("hidden");
+
+      // 3. Pause timeline loop and lock controls
+      this.isPlaying = false;
+      if (this.timerId) clearTimeout(this.timerId);
+      if (playPauseBtn) {
+        playPauseBtn.disabled = true;
+        playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> LOCKED`;
+        playPauseBtn.className = "px-3 py-1.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-600 font-mono text-xs flex items-center transition cursor-not-allowed opacity-50";
+      }
+
+      // Disable phase overrides
+      this.phases.forEach(ph => {
+        const btn = document.getElementById(`ctrl-phase-${ph.id}`);
+        if (btn) {
+          btn.style.pointerEvents = "none";
+          btn.style.opacity = "0.3";
+        }
+      });
+
+      // 4. Force timeline to Phase 0 of the current scenario
+      this.seconds = 0;
+      this.currentPhase = -1;
+      this.updateUI();
+      this.evaluateStateTransitions();
+
+      // 5. Update CTF HUD
+      this.updateCtfConsole();
+    } else {
+      // Restore default states
+      if (aiContainer) aiContainer.classList.remove("hidden");
+      if (ctfContainer) ctfContainer.classList.add("hidden");
+      if (scoreContainer) scoreContainer.classList.add("hidden");
+
+      // Restore phase override buttons
+      this.phases.forEach(ph => {
+        const btn = document.getElementById(`ctrl-phase-${ph.id}`);
+        if (btn) {
+          btn.style.pointerEvents = "auto";
+          btn.style.opacity = "1";
+        }
+      });
+
+      // Restore Play/Pause button
+      if (playPauseBtn) {
+        playPauseBtn.disabled = false;
+        playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
+        playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+      }
+
+      // Reset scenario to start fresh
+      this.setScenario(this.currentScenario);
+    }
+  }
+
+  updateCtfConsole() {
+    const ctfTitle = document.getElementById("ctf-challenge-title");
+    const ctfDesc = document.getElementById("ctf-challenge-desc");
+    const ctfHintText = document.getElementById("ctf-hint-text");
+    const ctfFeedback = document.getElementById("ctf-feedback");
+    const ctfFlagInput = document.getElementById("ctf-flag-input");
+    const ctfSubmitBtn = document.getElementById("ctf-submit-btn");
+
+    if (!ctfTitle || !ctfDesc || !ctfHintText || !ctfFeedback) return;
+
+    // Clear input and hide hint
+    if (ctfFlagInput) ctfFlagInput.value = "";
+    ctfHintText.classList.add("hidden");
+    ctfFeedback.textContent = "AWAITING FLAG INPUT";
+    ctfFeedback.className = "text-[9px] font-mono text-center mt-1.5 h-3.5 text-neutral-500";
+
+    // targetPhase is the next phase to unlock.
+    // If currentPhase is 0, we are on Challenge 1 (which leads to Phase 1).
+    // If currentPhase is 1, Challenge 2 (leads to Phase 2).
+    // If currentPhase is 2, Challenge 3 (leads to Phase 3).
+    // If currentPhase is 3, they have completed Phase 3, so transition to Phase 4 (cleanse/completion).
+    const targetPhase = this.currentPhase + 1;
+
+    if (targetPhase > 3) {
+      ctfTitle.textContent = "🏆 CAMPAIGN SECURED!";
+      ctfDesc.innerHTML = `<span class="text-green-400 font-bold">CONGRATULATIONS OPERATOR!</span><br/>You successfully solved all challenges for this campaign.<br/><br/>Select another campaign above to start a new mission.`;
+      if (ctfFlagInput) ctfFlagInput.disabled = true;
+      if (ctfSubmitBtn) ctfSubmitBtn.disabled = true;
+      
+      // Auto advance to Phase 4 sanitization reset
+      const nextPhaseConfig = this.phases.find(p => p.id === 4);
+      if (nextPhaseConfig) {
+        this.seconds = nextPhaseConfig.start;
+        this.currentPhase = -1;
+        this.updateUI();
+        this.evaluateStateTransitions();
+      }
+      return;
+    }
+
+    if (ctfFlagInput) ctfFlagInput.disabled = false;
+    if (ctfSubmitBtn) ctfSubmitBtn.disabled = false;
+
+    const challenge = this.ctfChallenges[this.currentScenario]?.[targetPhase];
+    if (challenge) {
+      ctfTitle.textContent = challenge.title;
+      ctfDesc.textContent = challenge.desc;
+      ctfHintText.textContent = `HINT: ${challenge.hint}`;
+    } else {
+      ctfTitle.textContent = "Challenge: Loading...";
+      ctfDesc.textContent = "Standby for incoming campaign telemetry briefing.";
+    }
+  }
+
+  submitCtfFlag() {
+    const ctfFlagInput = document.getElementById("ctf-flag-input");
+    const ctfFeedback = document.getElementById("ctf-feedback");
+    const ctfContainer = document.getElementById("ctf-console-container");
+
+    if (!ctfFlagInput || !ctfFeedback) return;
+
+    const userInput = ctfFlagInput.value.trim().toLowerCase();
+    if (!userInput) {
+      ctfFeedback.textContent = "ERROR: Flag input cannot be empty";
+      ctfFeedback.className = "text-[9px] font-mono text-center mt-1.5 h-3.5 text-amber-500";
+      return;
+    }
+
+    const targetPhase = this.currentPhase + 1;
+    const challenge = this.ctfChallenges[this.currentScenario]?.[targetPhase];
+    if (!challenge) return;
+
+    const isCorrect = userInput === challenge.flag.toLowerCase();
+
+    if (isCorrect) {
+      const key = `${this.currentScenario}-${targetPhase}`;
+      if (!this.solvedFlags[key]) {
+        this.solvedFlags[key] = true;
+        this.ctfScore += challenge.points;
+        const scoreVal = document.getElementById("ctf-score-val");
+        if (scoreVal) scoreVal.textContent = this.ctfScore;
+      }
+
+      ctfFeedback.textContent = `SUCCESS: VALID FLAG DECRYPTED! +${challenge.points} PTS`;
+      ctfFeedback.className = "text-[9px] font-mono text-center mt-1.5 h-3.5 text-green-400 animate-pulse font-bold";
+
+      // Trigger standard visual phase progression
+      const nextPhaseConfig = this.phases.find(p => p.id === targetPhase);
+      if (nextPhaseConfig) {
+        this.seconds = nextPhaseConfig.start;
+        this.currentPhase = -1; // force re-evaluation
+        this.updateUI();
+        this.evaluateStateTransitions();
+      }
+
+      setTimeout(() => {
+        this.updateCtfConsole();
+      }, 2000);
+
+    } else {
+      ctfFeedback.textContent = "ACCESS DENIED: INVALID FLAG / CHECKSUM MISMATCH";
+      ctfFeedback.className = "text-[9px] font-mono text-center mt-1.5 h-3.5 text-red-500 font-bold";
+
+      if (ctfContainer) {
+        ctfContainer.classList.add("animate-shake");
+        ctfContainer.style.borderColor = "#ef4444";
+        setTimeout(() => {
+          ctfContainer.classList.remove("animate-shake");
+          ctfContainer.style.borderColor = "";
+        }, 500);
+      }
     }
   }
 }

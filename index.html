@@ -107,6 +107,22 @@
             </label>
           </div>
 
+          <!-- CTF Mode Toggle -->
+          <div class="flex items-center bg-neutral-950 border border-neutral-800 p-0.5 rounded shrink-0">
+            <label class="flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded font-mono text-[10px] text-neutral-400 hover:text-neutral-300 transition select-none">
+              <input id="ctrl-ctf-toggle" type="checkbox" class="w-3.5 h-3.5 accent-red-500 cursor-pointer" />
+              <span>CTF MODE</span>
+            </label>
+          </div>
+
+          <!-- CTF Score Widget -->
+          <div id="ctf-score-container" class="hidden flex items-center bg-red-950/20 border border-red-900/40 px-2.5 py-1 rounded shrink-0 font-mono text-[10px] text-red-400">
+            <span class="font-bold tracking-wider mr-1.5">SCORE:</span>
+            <span id="ctf-score-val" class="font-extrabold text-red-300">0</span>
+            <span class="text-red-900/50 mx-1">/</span>
+            <span>300</span>
+          </div>
+
           <!-- Play / Pause -->
           <button id="ctrl-play-pause" type="button" class="px-3 py-1.5 rounded bg-neutral-900 border border-neutral-700 hover:border-neutral-500 text-neutral-300 font-mono text-xs flex items-center transition">
             <svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> PAUSE
@@ -127,72 +143,80 @@
       <div id="hud-timeline-percent" class="h-full bg-blue-500 shadow-[0_0_8px_#3b82f6] transition-all duration-1000 ease-linear" style="width: 0%;"></div>
     </div>
 
-    <!-- MAIN CONTAINER GRID -->
-    <main class="flex-1 grid grid-cols-12 grid-rows-6 p-4 gap-4 overflow-hidden min-h-0">
+    <!-- MAIN CONTAINER GRID (CONVERTED TO FLEX FOR ADJUSTABLE SIZE PANELS) -->
+    <main class="flex-1 flex flex-col p-4 gap-1 overflow-hidden min-h-0">
       
-      <!-- PANEL 1 CONTAINER WRAPPER -->
-      <div class="col-span-6 row-span-3 flex flex-col gap-3 min-h-0 overflow-hidden">
-        <!-- SCENARIO SELECTOR BAR (Above Panel 1) -->
-        <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
-          <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">ACTIVE CAMPAIGN:</span>
-          <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
-            <button id="ctrl-scenario-0" type="button" class="px-2.5 py-1 rounded text-neutral-200 font-mono text-[9px] transition bg-neutral-900 border border-neutral-700 font-bold">CAMP-01: POWER GRID</button>
-            <button id="ctrl-scenario-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">CAMP-02: TRANSIT SYSTEM</button>
-            <button id="ctrl-scenario-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">CAMP-03: HOSPITAL ER</button>
+      <div id="dashboard-top-row" class="flex flex-row min-h-0 w-full" style="height: 50%;">
+        <!-- PANEL 1 CONTAINER WRAPPER -->
+        <div id="panel-attacker-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 50%;">
+          <!-- SCENARIO SELECTOR BAR (Above Panel 1) -->
+          <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
+            <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">ACTIVE CAMPAIGN:</span>
+            <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
+              <button id="ctrl-scenario-0" type="button" class="px-2.5 py-1 rounded text-neutral-200 font-mono text-[9px] transition bg-neutral-900 border border-neutral-700 font-bold">CAMP-01: POWER GRID</button>
+              <button id="ctrl-scenario-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">CAMP-02: TRANSIT SYSTEM</button>
+              <button id="ctrl-scenario-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">CAMP-03: HOSPITAL ER</button>
+            </div>
           </div>
+
+          <!-- PANEL 1: THE ATTACKER TERMINAL -->
+          <section class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl relative min-h-0">
+            <!-- Panel Header -->
+            <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <h2 id="panel-attacker-title" class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 1 // THREAT PROPAGATION SYSTEM</h2>
+              </div>
+              <span class="text-[9px] font-mono text-neutral-500">TTY: /dev/pts/88</span>
+            </div>
+            <!-- Terminal Body -->
+            <div class="flex-1 p-4 bg-black/85 overflow-y-auto custom-scrollbar select-text crt-screen">
+              <div id="attacker-terminal-content" class="font-mono text-xs text-green-500 glow-text-green whitespace-pre-wrap leading-relaxed"></div>
+            </div>
+          </section>
         </div>
 
-        <!-- PANEL 1: THE ATTACKER TERMINAL -->
-        <section class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl relative min-h-0">
-          <!-- Panel Header -->
-          <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <h2 id="panel-attacker-title" class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 1 // THREAT PROPAGATION SYSTEM</h2>
-            </div>
-            <span class="text-[9px] font-mono text-neutral-500">TTY: /dev/pts/88</span>
-          </div>
-          <!-- Terminal Body -->
-          <div class="flex-1 p-4 bg-black/85 overflow-y-auto custom-scrollbar select-text crt-screen">
-            <div id="attacker-terminal-content" class="font-mono text-xs text-green-500 glow-text-green whitespace-pre-wrap leading-relaxed"></div>
-          </div>
-        </section>
-      </div>
+        <!-- Dynamic splitter drag bar -->
+        <div class="resizer-v mx-1.5 rounded"></div>
 
-      <!-- PANEL 2 CONTAINER WRAPPER -->
-      <div class="col-span-6 row-span-3 flex flex-col gap-3 min-h-0 overflow-hidden">
-        <!-- TOP HUD DECORATION FOR MAP -->
-        <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
-          <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">MUNICIPAL RADAR SCANNER:</span>
-          <span class="text-[9px] font-mono text-green-400 glow-text-green font-bold animate-pulse font-mono">ONLINE · MONITORING ALL SUB-VLAN VECTORS</span>
+        <!-- PANEL 2 CONTAINER WRAPPER -->
+        <div id="panel-map-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 50%;">
+          <!-- TOP HUD DECORATION FOR MAP -->
+          <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
+            <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">MUNICIPAL RADAR SCANNER:</span>
+            <span class="text-[9px] font-mono text-green-400 glow-text-green font-bold animate-pulse font-mono">ONLINE · MONITORING ALL SUB-VLAN VECTORS</span>
+          </div>
+
+          <!-- PANEL 2: SMART CITY MAP CANVAS -->
+          <section class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl min-h-0">
+            <!-- Panel Header -->
+            <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                <h2 class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 2 // MUNICIPAL TELEMETRY GRID</h2>
+              </div>
+              <span class="text-[9px] font-mono text-neutral-500">TOPOLOGY: INLINE_SVG</span>
+            </div>
+            <!-- Map Canvas Body -->
+            <div id="city-map-container" class="flex-1 overflow-hidden relative min-h-0 bg-neutral-950/60">
+              <!-- Dynamic SVG injected here -->
+            </div>
+          </section>
         </div>
-
-        <!-- PANEL 2: SMART CITY MAP CANVAS -->
-        <section class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl min-h-0">
-          <!-- Panel Header -->
-          <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-              <h2 class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 2 // MUNICIPAL TELEMETRY GRID</h2>
-            </div>
-            <span class="text-[9px] font-mono text-neutral-500">TOPOLOGY: INLINE_SVG</span>
-          </div>
-          <!-- Map Canvas Body -->
-          <div id="city-map-container" class="flex-1 overflow-hidden relative min-h-0 bg-neutral-950/60">
-            <!-- Dynamic SVG injected here -->
-          </div>
-        </section>
       </div>
 
-      <!-- PANEL 3: THE SIEM ANALYTICS BOARD (SPANS ALL COLUMNS) -->
-      <section class="col-span-12 row-span-3 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl">
+      <!-- Dynamic splitter drag bar -->
+      <div class="resizer-h my-1.5 rounded"></div>
+
+      <!-- PANEL 3: THE SIEM ANALYTICS BOARD -->
+      <section id="panel-siem-wrapper" class="bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl" style="height: 50%;">
         <!-- Panel Header -->
         <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             <h2 class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 3 // SIEM EVENTS & THREAT DEEP INSTRUMENTATION</h2>
           </div>
-          <!-- Quick Phase Jumper Bar (Descriptive & Explicit Jumps) -->
+          <!-- Quick Phase Jumper Bar -->
           <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
             <span class="text-[9px] font-mono text-neutral-600 px-2 uppercase shrink-0 font-bold">PHASE OVERRIDE:</span>
             <button id="ctrl-phase-0" type="button" class="px-2.5 py-1 rounded text-blue-400 font-mono text-[9px] transition bg-blue-500/10 border border-blue-500/40 glow-border-blue font-bold">PHASE 0: BASELINE</button>
@@ -204,10 +228,10 @@
         </div>
         
         <!-- SIEM Layout Body -->
-        <div class="flex-1 p-4 grid grid-cols-12 gap-4 min-h-0 select-text">
+        <div class="flex-1 p-4 flex flex-row gap-1 min-h-0 select-text w-full">
           
-          <!-- Column section A+B: Combined Metrics, Gauge, and EPS chart (col-span-4) -->
-          <div class="col-span-4 flex flex-col gap-3 min-h-0 overflow-hidden">
+          <!-- Column section A+B: Combined Metrics, Gauge, and EPS chart -->
+          <div id="siem-metrics-col" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 33.33%;">
             <!-- Numerical Metrics & Radial Threat Gauge -->
             <div class="bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex gap-4 items-center justify-between shrink-0">
               <!-- Numerical Metrics -->
@@ -241,8 +265,11 @@
             </div>
           </div>
 
-          <!-- Column section C: Live alerts log ticker (col-span-4) -->
-          <div class="col-span-4 bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0">
+          <!-- Dynamic splitter drag bar -->
+          <div class="resizer-v mx-1.5 rounded"></div>
+
+          <!-- Column section C: Live alerts log ticker -->
+          <div id="siem-ticker-col" class="bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0" style="width: 33.33%;">
             <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-2 flex items-center justify-between">
               <span>LIVE SIEM EVENT STREAM</span>
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -252,23 +279,48 @@
             </div>
           </div>
 
-          <!-- Column section D: AI Tactical Co-Pilot (col-span-4) -->
-          <div class="col-span-4 bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0 select-text">
-            <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-              <span>AI CO-PILOT</span>
-              <span id="ai-status-indicator" class="w-1.5 h-1.5 rounded-full bg-neutral-600"></span>
+          <!-- Dynamic splitter drag bar -->
+          <div class="resizer-v mx-1.5 rounded"></div>
+
+          <!-- Column section D: AI Tactical Co-Pilot / CTF Console wrapper -->
+          <div id="siem-copilot-col" class="flex flex-col min-h-0" style="width: 33.33%;">
+            <!-- AI Tactical Co-Pilot -->
+            <div id="ai-copilot-container" class="flex-1 bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0 select-text">
+              <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>AI CO-PILOT</span>
+                <span id="ai-status-indicator" class="w-1.5 h-1.5 rounded-full bg-neutral-600"></span>
+              </div>
+              <div class="flex items-center gap-1.5 mb-2 bg-neutral-950 p-1 rounded border border-neutral-850">
+                <input id="ai-model-name" type="text" value="gemma4:26b" placeholder="Model" class="w-full bg-transparent border-none text-[10px] font-mono text-neutral-300 focus:outline-none placeholder-neutral-700 uppercase" />
+                <button id="ai-analyze-btn" type="button" class="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 font-mono text-[9px] transition font-bold shrink-0">ANALYZE</button>
+              </div>
+              <div id="ai-copilot-content" class="flex-1 overflow-y-auto custom-scrollbar bg-black/50 border border-neutral-950 p-2 rounded font-mono text-[13px] text-blue-400 leading-relaxed whitespace-pre-wrap select-all">STANDBY FOR CYBER CAMPAIGN DATA INTERCEPT...</div>
             </div>
-            <div class="flex items-center gap-1.5 mb-2 bg-neutral-950 p-1 rounded border border-neutral-850">
-              <input id="ai-model-name" type="text" value="gemma4:26b" placeholder="Model" class="w-full bg-transparent border-none text-[10px] font-mono text-neutral-300 focus:outline-none placeholder-neutral-700 uppercase" />
-              <button id="ai-analyze-btn" type="button" class="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 font-mono text-[9px] transition font-bold shrink-0">ANALYZE</button>
+
+            <!-- CTF Control Console -->
+            <div id="ctf-console-container" class="hidden flex-1 bg-neutral-900/30 border border-red-900/40 p-3 rounded-lg flex flex-col min-h-0 select-text">
+              <div class="text-[10px] font-mono text-red-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>CTF CHALLENGE CONSOLE</span>
+                <span id="ctf-status-indicator" class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+              </div>
+              <div class="flex-1 overflow-y-auto custom-scrollbar bg-black/50 border border-neutral-950 p-2.5 rounded font-mono text-xs text-neutral-200 leading-relaxed flex flex-col gap-2">
+                <div id="ctf-challenge-title" class="font-bold text-red-400 uppercase text-[11px] border-b border-neutral-800 pb-1.5">Challenge: Loading...</div>
+                <div id="ctf-challenge-desc" class="text-neutral-300 mt-1 select-text">Select a scenario and phase to begin.</div>
+                <div id="ctf-hint-text" class="text-[10px] text-amber-500 italic hidden mt-1 border-t border-neutral-900 pt-1.5">Hint will show here.</div>
+              </div>
+              <div class="flex items-center gap-1.5 mt-2 bg-neutral-950 p-1.5 rounded border border-neutral-850">
+                <button id="ctf-hint-btn" type="button" class="px-2 py-1.5 rounded bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-400 font-mono text-[9px] transition font-bold shrink-0">HINT</button>
+                <input id="ctf-flag-input" type="text" placeholder="ENTER FLAG" class="w-full bg-transparent border-none text-[11px] font-mono text-neutral-100 focus:outline-none placeholder-neutral-700 uppercase px-1" />
+                <button id="ctf-submit-btn" type="button" class="px-3 py-1.5 rounded bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 font-mono text-[9px] transition font-bold shrink-0">SUBMIT</button>
+              </div>
+              <div id="ctf-feedback" class="text-[9px] font-mono text-center mt-1.5 h-3.5 text-neutral-500">AWAITING FLAG INPUT</div>
             </div>
-            <div id="ai-copilot-content" class="flex-1 overflow-y-auto custom-scrollbar bg-black/50 border border-neutral-950 p-2 rounded font-mono text-[13px] text-blue-400 leading-relaxed whitespace-pre-wrap select-all">STANDBY FOR CYBER CAMPAIGN DATA INTERCEPT...</div>
           </div>
 
         </div>
       </section>
-
     </main>
+
 
     <!-- INTERACTIVE POLL MODAL -->
     <div id="interactive-poll-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] hidden">
@@ -308,5 +360,6 @@
     <script src="js/city-map.js?v=102"></script>
     <script src="js/siem.js?v=102"></script>
     <script src="js/app.js?v=102"></script>
+    <script src="js/resizable.js?v=102"></script>
   </body>
 </html>
