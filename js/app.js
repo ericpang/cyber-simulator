@@ -953,6 +953,7 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
     const isCorrect = userInput === challenge.flag.toLowerCase();
 
     if (isCorrect) {
+      this.playCtfCheers();
       const key = `${this.currentScenario}-${targetPhase}`;
       if (!this.solvedFlags[key]) {
         this.solvedFlags[key] = true;
@@ -978,6 +979,7 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
       }, 2000);
 
     } else {
+      this.playCtfBuzzer();
       ctfFeedback.textContent = "ACCESS DENIED: INVALID FLAG / CHECKSUM MISMATCH";
       ctfFeedback.className = "text-[9px] font-mono text-center mt-1.5 h-3.5 text-red-500 font-bold";
 
@@ -989,6 +991,112 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
           ctfContainer.style.borderColor = "";
         }, 500);
       }
+    }
+  }
+
+  playCtfBuzzer() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const duration = 0.8;
+      
+      // We use 3 oscillators to build a rich, discordant, descending "fail" buzz
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const oscDiscord = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      osc1.type = 'sawtooth';
+      osc2.type = 'square';
+      oscDiscord.type = 'sawtooth';
+
+      // Low power grid / system failure rumble starting frequencies
+      osc1.frequency.setValueAtTime(140, ctx.currentTime);
+      osc2.frequency.setValueAtTime(143, ctx.currentTime);
+      oscDiscord.frequency.setValueAtTime(195, ctx.currentTime); // Discordant tritone/7th feel
+
+      // Dramatic slide down in pitch
+      osc1.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + duration);
+      osc2.frequency.exponentialRampToValueAtTime(57, ctx.currentTime + duration);
+      oscDiscord.frequency.exponentialRampToValueAtTime(77, ctx.currentTime + duration);
+
+      // Volume envelope: start loud and decrease
+      gainNode.gain.setValueAtTime(0.18, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+      osc1.connect(gainNode);
+      osc2.connect(gainNode);
+      oscDiscord.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      oscDiscord.start();
+
+      osc1.stop(ctx.currentTime + duration);
+      osc2.stop(ctx.currentTime + duration);
+      oscDiscord.stop(ctx.currentTime + duration);
+    } catch (e) {
+      console.warn("Failed to play dramatic buzzer audio:", e);
+    }
+  }
+
+  playCtfCheers() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Step 1: Rapid triumphant arpeggio build-up
+      const arpeggio = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99]; // C4, E4, G4, C5, E5, G5
+      const noteDelay = 0.06;
+      
+      arpeggio.forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + index * noteDelay);
+        
+        gainNode.gain.setValueAtTime(0.08, ctx.currentTime + index * noteDelay);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * noteDelay + 0.25);
+        
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        osc.start(ctx.currentTime + index * noteDelay);
+        osc.stop(ctx.currentTime + index * noteDelay + 0.25);
+      });
+
+      // Step 2: Big, dramatic, sustaining C-Major 9th chord at the end of the arpeggio
+      const chordTime = arpeggio.length * noteDelay;
+      const chordNotes = [
+        { freq: 523.25, type: 'triangle' }, // C5
+        { freq: 659.25, type: 'triangle' }, // E5
+        { freq: 783.99, type: 'sine' },     // G5
+        { freq: 987.77, type: 'sine' },     // B5 (Major 7th for warmth/gleam)
+        { freq: 1046.50, type: 'sine' },    // C6
+        { freq: 1318.51, type: 'sine' }     // E6
+      ];
+      
+      chordNotes.forEach(note => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        osc.type = note.type;
+        // Introduce a tiny detune to give a rich chorus/ensemble effect
+        osc.frequency.setValueAtTime(note.freq + (Math.random() * 4 - 2), ctx.currentTime + chordTime);
+        
+        gainNode.gain.setValueAtTime(0.05, ctx.currentTime + chordTime);
+        // Long, dramatic sustain and slow fade
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + chordTime + 1.2);
+        
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        osc.start(ctx.currentTime + chordTime);
+        osc.stop(ctx.currentTime + chordTime + 1.25);
+      });
+    } catch (e) {
+      console.warn("Failed to play dramatic cheers audio:", e);
     }
   }
 }
