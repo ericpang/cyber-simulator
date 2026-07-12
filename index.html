@@ -32,7 +32,12 @@
     </script>
 
     <!-- Custom CSS (Neon glows, CRT overlays, scanlines, animations) -->
-    <link rel="stylesheet" href="css/custom.css?v=99" />
+    <script>
+      const customCssLink = document.createElement("link");
+      customCssLink.rel = "stylesheet";
+      customCssLink.href = "css/custom.css?v=" + Date.now();
+      document.head.appendChild(customCssLink);
+    </script>
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -102,7 +107,7 @@
           <!-- Interactive Prompts Toggle -->
           <div class="flex items-center bg-neutral-950 border border-neutral-800 p-0.5 rounded shrink-0">
             <label class="flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded font-mono text-[10px] text-neutral-400 hover:text-neutral-300 transition select-none">
-              <input id="ctrl-interactive-toggle" type="checkbox" class="w-3.5 h-3.5 accent-blue-500 cursor-pointer" />
+              <input id="ctrl-interactive-toggle" type="checkbox" checked class="w-3.5 h-3.5 accent-blue-500 cursor-pointer" />
               <span>INTERACTIVE PROMPTS</span>
             </label>
           </div>

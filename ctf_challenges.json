@@ -18,7 +18,7 @@
       "title": "Challenge Blue-03: VLAN Containment & Isolation",
       "desc": "A critical breach is active! We must trigger an incident response to quarantine the attacker. Find the VLAN identifier that has been isolated to contain the threat.",
       "hint": "Look at the terminal logs or check the telemetry grid's quarantined network link. The isolated VLAN is labeled starting with VLAN_.",
-      "flag": "VLAN_10",
+      "flag": "VLAN_42",
       "points": 150
     }
   },

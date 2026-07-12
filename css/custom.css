@@ -113,12 +113,12 @@
 
 .map-node {
   transform-origin: center;
-  transition: fill 0.8s, opacity 0.8s, transform 0.5s;
+  transition: fill 0.8s, opacity 0.8s, transform 0.5s, scale 0.5s;
 }
 
 .map-node:hover {
   cursor: pointer;
-  transform: scale(1.15);
+  scale: 1.15;
 }
 
 .node-pulse-green {

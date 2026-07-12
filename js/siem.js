@@ -41,7 +41,7 @@ class SiemDashboard {
         ],
         2: [
           "Modbus protocol anomaly: Unrecognized function code write command sent to PLC_192.168.42.50",
-          "ICS telemetry alert: Coil register 40001 (Main Breaker) modified from normal operations!",
+          "ICS telemetry alert: Coil register 40001 (Main Breaker) on Substation Alpha (VLAN_42) modified!",
           "Power grid failure telemetry: Municipal grid West (VLAN 102) reporting voltage collapse (0 kV)",
           "Power grid failure telemetry: Transit system (VLAN 108) reporting loss of line pressure",
           "SCADA network communication lost with 192.168.42.50 (Timeout)",
@@ -80,7 +80,8 @@ class SiemDashboard {
           "ALERT: Unauthorized reverse shell connection established to external IP 10.10.14.89",
           "CRITICAL TELEMETRY: Signal Override command executing on Transit Controller CLI.",
           "ALERT: Track B rail signals set to RED. Track collision warning systems engaged!",
-          "ALERT: Railway automatic failsafe emergency stop triggered. Grid lock in progress."
+          "ALERT: Railway automatic failsafe emergency stop triggered. Grid lock in progress.",
+          "FIREWALL STATE DETECTED: Incoming rule update queued -> STATUS: REVOKED for compromised session JWT."
         ],
         3: [
           "SOAR ACTION: Network isolation block deployed for VLAN 108 transit endpoints.",
@@ -111,15 +112,16 @@ class SiemDashboard {
         2: [
           "CRITICAL ALERT: Cryptolocker binary execution detected in C:\\Windows\\Temp\\locker.exe!",
           "ALERT: Multiple bulk file write operations. Shadow copies deleted on receptionist server.",
-          "CRITICAL BREACH: Patient database records encrypted. Files renamed with .locked suffix!",
+          "CRITICAL BREACH: Patient database records encrypted. Files renamed with .cryptolocker suffix!",
           "ALERT: HVAC ventilation control registers offline (temperature alarm triggered).",
-          "WARN: Emergency air-gapped system isolation manual switch pulled by administrator."
+          "WARN: Emergency air-gapped system isolation manual switch pulled by administrator.",
+          "SOAR PRE-STAGE: Backup recovery plan prepared using GOLDEN_IMAGE profile."
         ],
         3: [
           "SOAR ACTION: Automated quarantine of receptionist VLAN 110. Subnet isolated.",
           "SOAR ACTION: Active Directory credentials revoked for compromise session er_reception.",
           "INFO: Ransomware network propagation halted. 0 files affected on other subnets.",
-          "INFO: Emergency backup system recovery loop initialized from air-gapped backups.",
+          "INFO: Emergency backup system recovery loop initialized using GOLDEN_IMAGE profile.",
           "INFO: HVAC control systems re-loaded. Temperature stabilizing. Patient records online."
         ],
         4: [

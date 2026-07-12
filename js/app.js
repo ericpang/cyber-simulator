@@ -82,7 +82,7 @@ class AppOrchestrator {
     this.selectedVoiceName = "";
     
     // Interactive Prompts Options & State
-    this.isInteractiveMode = false;
+    this.isInteractiveMode = true;
     this.selectedChoiceIndex = 0;
     this.pollData = {};
 
@@ -101,7 +101,7 @@ class AppOrchestrator {
 
     // Load interactive polls configuration from abstracted file
     try {
-      const response = await fetch("interactive_polls.json?v=102");
+      const response = await fetch(`interactive_polls.json?v=${Date.now()}`);
       if (response.ok) {
         this.pollData = await response.json();
       } else {
@@ -113,7 +113,7 @@ class AppOrchestrator {
 
     // Load CTF challenges configuration
     try {
-      const response = await fetch("ctf_challenges.json?v=102");
+      const response = await fetch(`ctf_challenges.json?v=${Date.now()}`);
       if (response.ok) {
         this.ctfChallenges = await response.json();
       } else {
@@ -138,8 +138,19 @@ class AppOrchestrator {
     // Update play/pause button UI to reflect paused state
     const playPauseBtn = document.getElementById("ctrl-play-pause");
     if (playPauseBtn) {
-      playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
-      playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+      if (this.isInteractiveMode) {
+        playPauseBtn.disabled = true;
+        playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> PAUSED`;
+        playPauseBtn.className = "px-3 py-1.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-600 font-mono text-xs flex items-center transition cursor-not-allowed opacity-50";
+        
+        const copilotContent = document.getElementById("ai-copilot-content");
+        if (copilotContent) {
+          copilotContent.textContent = "[SYSTEM NOTICE]: Simulation is in INTERACTIVE PROMPTS mode. Auto-play is disabled. Click any Phase Override button below to start voting and configure custom tactics.";
+        }
+      } else {
+        playPauseBtn.innerHTML = `<svg class="w-4 h-4 mr-1.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> RESUME`;
+        playPauseBtn.className = "px-3 py-1.5 rounded bg-green-500/10 border border-green-500/40 hover:bg-green-500/20 text-green-400 font-mono text-xs flex items-center transition glow-border-green";
+      }
     }
   }
 

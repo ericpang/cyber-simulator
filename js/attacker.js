@@ -222,7 +222,8 @@ class AttackerTerminal {
           { type: 'cmd', text: 'hydra -L users.txt -P rockyou.txt ssh://192.168.42.10' },
           { type: 'out', text: 'Hydra target ssh://192.168.42.10:22/ - service ssh\n', delay: 100 },
           { type: 'out', text: '[22][ssh] host: 192.168.42.10   login: admin   password: password123 [FAILED]\n', delay: 150 },
-          { type: 'out', text: '[22][ssh] host: 192.168.42.10   login: engineering   password: superpass [SUCCESS]\n', delay: 300 }
+          { type: 'out', text: '[22][ssh] host: 192.168.42.10   login: engineering   password: superpass [SUCCESS]\n', delay: 300 },
+          { type: 'out', text: '[+] SCADA register mapping discovered: Coil 40001 mapped to Main Grid Breaker\n', delay: 100 }
         );
         break;
 
@@ -238,7 +239,7 @@ class AttackerTerminal {
           { type: 'out', text: '[*] RHOSTS => 192.168.42.50\n', delay: 100 },
           { type: 'out', text: '[*] Sending Modbus write register packet...\n', delay: 200 },
           { type: 'out', text: '[*] Overriding critical relay 40001 (Main Breaker) => [0xFFFF]\n', delay: 200 },
-          { type: 'out', text: '[+] Modbus write command acknowledged by PLC_192.168.42.50\n', delay: 100 },
+          { type: 'out', text: '[+] Modbus write command acknowledged by PLC_192.168.42.50 (VLAN_42)\n', delay: 100 },
           { type: 'out', text: '\n[CRITICAL] ICS PAYLOAD OVERWRITE INJECTED SUCCESSFUL\n', delay: 300 },
           { type: 'out', text: '[CRITICAL] SUBSTATION ALPHA POWER GRID SHUTTING DOWN\n', delay: 100 },
           { type: 'out', text: 'meterpreter > ', delay: 400 }
@@ -362,7 +363,8 @@ class AttackerTerminal {
           { type: 'out', text: '64 bytes from 192.168.42.80: icmp_seq=1 ttl=64 time=0.82 ms\n', delay: 200 },
           { type: 'out', text: '64 bytes from 192.168.42.80: icmp_seq=2 ttl=64 time=0.79 ms\n', delay: 200 },
           { type: 'out', text: '64 bytes from 192.168.42.80: icmp_seq=3 ttl=64 time=0.81 ms\n\n', delay: 200 },
-          { type: 'out', text: '[+] Host 192.168.42.80 online. Round-trip telemetry active.\n', delay: 100 }
+          { type: 'out', text: '[+] Host 192.168.42.80 online. Round-trip telemetry active.\n', delay: 100 },
+          { type: 'out', text: '[i] Next campaign action queued: Web vulnerability sweep via nikto.\n', delay: 100 }
         );
         break;
 
@@ -508,8 +510,8 @@ class AttackerTerminal {
           { type: 'cmd', text: 'nmap -PN -p 445 192.168.42.90' },
           { type: 'out', text: 'Nmap scan report for hospital-er.local (192.168.42.90)\n', delay: 200 },
           { type: 'out', text: 'PORT    STATE SERVICE\n', delay: 50 },
-          { type: 'out', text: '445/tcp open  microsoft-ds (SMBv3 Active)\n\n', delay: 50 },
-          { type: 'out', text: '[+] SMB Port 445 exposed. Patient database registry visible.\n', delay: 100 }
+          { type: 'out', text: '445/tcp open  microsoft-ds (SMBv1 vulnerable to CVE-2017-0144)\n\n', delay: 50 },
+          { type: 'out', text: '[+] SMB Port 445 exposed. Vulnerable to EternalBlue CVE-2017-0144.\n', delay: 100 }
         );
         break;
 
@@ -520,7 +522,8 @@ class AttackerTerminal {
           { type: 'out', text: '[+] Email dispatched successfully (Ref: INVOICE-2026-904)\n', delay: 200 },
           { type: 'out', text: '[*] Awaiting recipient document macro execution...\n', delay: 400 },
           { type: 'out', text: '[*] Backdoor shell established: 10.10.14.90:8080 <- 192.168.42.90:49214\n', delay: 300 },
-          { type: 'out', text: '[*] System check: Username er_reception, Privilege level: User\n', delay: 100 }
+          { type: 'out', text: '[*] System check: Username er_reception, Privilege level: User\n', delay: 100 },
+          { type: 'out', text: '[i] Next action: Deploy locker.exe (Target extension: .cryptolocker)\n', delay: 100 }
         );
         break;
 
@@ -531,7 +534,7 @@ class AttackerTerminal {
           { type: 'out', text: '[+] Uploaded locker.exe successfully (2.4 MB)\n', delay: 200 },
           { type: 'cmd', text: 'execute -f "C:\\Windows\\Temp\\locker.exe --escalate --encrypt-all"' },
           { type: 'out', text: '\n[*] Executing ransomware payload...\n', delay: 300 },
-          { type: 'out', text: '[!] CRYPTOLOCKER: ENCRYPTING C:\\Users\\*\\Documents... [OK]\n', delay: 150 },
+          { type: 'out', text: '[!] CRYPTOLOCKER: ENCRYPTING C:\\Users\\*\\Documents... Appending extension .cryptolocker [OK]\n', delay: 150 },
           { type: 'out', text: '[!] CRYPTOLOCKER: LOCKING HVAC VENTILATION SYSTEM REGISTERS... [OK]\n', delay: 150 },
           { type: 'out', text: '[!] CRYPTOLOCKER: PATIENT TELEMETRY DATA ENCRYPTED. COMPROMISED.\n', delay: 100 },
           { type: 'out', text: '[!] RANSOM NOTE INJECTED: RANSOM_DECRYPT.txt COPIED TO DESKTOP.\n', delay: 200 }

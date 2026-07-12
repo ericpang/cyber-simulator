@@ -42,10 +42,10 @@ In this mode, the presenter or selected audience operators must locate clues fro
 ### 🚩 Challenge 3: VLAN Containment & Isolation
 * **Question Text**: *"Find the VLAN identifier that has been isolated to contain the threat."*
 * **Where to find clue**: Once the blackout triggers, look at the isolated telemetry link on the map or read the defender isolation scripts.
-* **Flag**: `VLAN_10`
+* **Flag**: `VLAN_42`
 * **Score value**: 150 pts
 * **Audience Script**:
-  > "The grid is down! We must isolate the compromised segments. Look at the network link connecting Corp-HQ and Substation Alpha on our telemetry grid map. It has changed to blue. What is the isolated VLAN ID? Entering VLAN_10 triggers the VLAN lock, sanitizes our grid, and recovers the sectors."
+  > "The grid is down! We must isolate the compromised segments. Look at the network link connecting Corp-HQ and Substation Alpha on our telemetry grid map. It has changed to blue. What is the isolated VLAN ID? Entering VLAN_42 triggers the VLAN lock, sanitizes our grid, and recovers the sectors."
 
 ---
 
