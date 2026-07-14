@@ -20,18 +20,18 @@ class AppOrchestrator {
     this.scenarios = [
       {
         id: 0,
-        name: "Scenario 1: Power Grid Substation Compromise",
-        desc: "Attacker targets Substation Alpha Modbus relays, blacking out municipal grids."
+        name: "Scenario 1: Active Directory Domain Ransomware",
+        desc: "Attacker targets primary Domain Controller database, blacking out internal network logins."
       },
       {
         id: 1,
-        name: "Scenario 2: Metro Transit Platform Signal Hijack",
-        desc: "Attacker targets Transit Hub API signal override controls, freezing track signals."
+        name: "Scenario 2: Cloud E-Commerce Database Exfiltration",
+        desc: "Attacker exploits SQL Web API vulnerability to steal customer database records."
       },
       {
         id: 2,
-        name: "Scenario 3: Hospital ER Ransomware Lock",
-        desc: "Attacker targets Hospital ER SMB shares, deploying cryptolocker ransomware."
+        name: "Scenario 3: Corporate BEC Financial Fraud Campaign",
+        desc: "Attacker targets executive email session credentials to execute financial wire fraud."
       }
     ];
 
@@ -101,26 +101,26 @@ class AppOrchestrator {
 
     // Load interactive polls configuration from abstracted file
     try {
-      const response = await fetch(`interactive_polls.json?v=${Date.now()}`);
+      const response = await fetch(`campaigns/it/interactive_polls.json?v=${Date.now()}`);
       if (response.ok) {
         this.pollData = await response.json();
       } else {
-        console.warn("interactive_polls.json response failed.");
+        console.warn("campaigns/it/interactive_polls.json response failed.");
       }
     } catch (err) {
-      console.error("Failed to load interactive_polls.json config:", err);
+      console.error("Failed to load campaigns/it/interactive_polls.json config:", err);
     }
 
     // Load CTF challenges configuration
     try {
-      const response = await fetch(`ctf_challenges.json?v=${Date.now()}`);
+      const response = await fetch(`campaigns/it/ctf_challenges.json?v=${Date.now()}`);
       if (response.ok) {
         this.ctfChallenges = await response.json();
       } else {
-        console.warn("ctf_challenges.json response failed.");
+        console.warn("campaigns/it/ctf_challenges.json response failed.");
       }
     } catch (err) {
-      console.error("Failed to load ctf_challenges.json config:", err);
+      console.error("Failed to load campaigns/it/ctf_challenges.json config:", err);
     }
 
     // Initialize subsystems
@@ -311,9 +311,9 @@ class AppOrchestrator {
         btn.addEventListener("click", () => {
           speeds.forEach(s => {
             const b = document.getElementById(`ctrl-speed-${s}x`);
-            if (b) b.className = "px-2 py-1.5 rounded bg-neutral-950 border border-neutral-800 text-neutral-500 font-mono text-[10px] hover:text-neutral-300 transition";
+            if (b) b.className = "px-2 py-1.5 rounded bg-neutral-950 border border-neutral-800 text-neutral-400 font-mono text-[10px] hover:text-neutral-200 transition";
           });
-          btn.className = "px-2 py-1.5 rounded bg-blue-500/10 border border-blue-500/40 text-blue-400 font-mono text-[10px] glow-border-blue transition";
+          btn.className = "px-2 py-1.5 rounded bg-blue-500/25 border border-blue-400/60 text-blue-200 font-mono text-[10px] glow-border-blue transition";
           this.setSpeedMultiplier(spd);
         });
       }
@@ -333,6 +333,8 @@ class AppOrchestrator {
     this.scenarios.forEach(sc => {
       const btn = document.getElementById(`ctrl-scenario-${sc.id}`);
       if (btn) {
+        const shortNames = ["CAMP-01: ACTIVE DIRECTORY", "CAMP-02: CLOUD DATABASE", "CAMP-03: EMAIL PHISHING"];
+        btn.textContent = shortNames[sc.id];
         btn.addEventListener("click", () => {
           this.setScenario(sc.id);
         });
@@ -519,9 +521,17 @@ class AppOrchestrator {
         const btn = document.getElementById(`ctrl-phase-${ph.id}`);
         if (btn) {
           if (ph.id === phase.id) {
-            btn.className = "px-2.5 py-1 rounded text-blue-400 font-mono text-[9px] transition bg-blue-500/10 border border-blue-500/40 glow-border-blue font-bold";
+            btn.className = "px-2.5 py-1 rounded text-blue-200 font-mono text-[9px] transition bg-blue-500/25 border border-blue-400/60 glow-border-blue font-bold";
+            if (this.isCtfMode) {
+              btn.style.opacity = "1";
+              btn.style.pointerEvents = "none";
+            }
           } else {
-            btn.className = "px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent";
+            btn.className = "px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent";
+            if (this.isCtfMode) {
+              btn.style.opacity = "0.65";
+              btn.style.pointerEvents = "none";
+            }
           }
         }
       });
@@ -580,26 +590,26 @@ class AppOrchestrator {
 
       // Audio script announcements mapping Scenario and Phase
       const announcements = {
-        0: { // Scenario 0: Power Grid
-          0: "System baseline established. All networks operating within normal parameters.",
-          1: "Threat warning. Reconnaissance activity detected targeting Substation Alpha network.",
-          2: "Critical breach alert. Substation Alpha telemetry compromised. Municipal power grid offline.",
-          3: "Mitigation active. Automated isolation protocols triggered. Restoring power grids.",
+        0: { // Scenario 0: Active Directory Ransomware
+          0: "System baseline established. Enterprise Directory Services operating within normal parameters.",
+          1: "Threat warning. Reconnaissance activity detected targeting primary Domain Controller.",
+          2: "Critical breach alert. Active Directory database compromised. Enterprise network locked.",
+          3: "Mitigation active. Automated domain containment triggered. Restoring directory databases.",
           4: "Sanitization sequence initiated. Threat cache rotation active. Next campaign standby."
         },
-        1: { // Scenario 1: Transit API
-          0: "System baseline established. Transit loop configuration online.",
-          1: "Threat warning. Web API scanning activity detected targeting Metro signaling ports.",
-          2: "Critical breach alert. Transit hub signaling overridden. Platform signals locked to red.",
-          3: "Mitigation active. Automated firewall rules deployed. Restoring railways signaling.",
+        1: { // Scenario 1: Cloud E-Commerce SQLi
+          0: "System baseline established. E-Commerce API portal online.",
+          1: "Threat warning. SQL scan activity detected targeting database API endpoints.",
+          2: "Critical breach alert. SQL Injection exploit successful. Customer databases compromised.",
+          3: "Mitigation active. Automated WAF rules deployed. Restoring database services.",
           4: "Sanitization sequence initiated. Request logs rotated. Next campaign standby."
         },
-        2: { // Scenario 2: Hospital Ransomware
-          0: "System baseline established. Hospital ER patient database active.",
-          1: "Threat warning. Phishing entry backdoor detected on receptionist terminal.",
-          2: "Critical breach alert. Cryptolocker ransomware execution detected. Database files encrypted.",
-          3: "Mitigation active. Automated subnet quarantine deployed. Restoring patient records from backup.",
-          4: "Sanitization sequence completed. Subnet disinfected. Threat campaign complete."
+        2: { // Scenario 2: Corporate BEC Phishing
+          0: "System baseline established. Corporate mail server SMTP gateway active.",
+          1: "Threat warning. Spear phishing attachment detected on executive terminal.",
+          2: "Critical breach alert. Session hijacking invoice fraud executed. Financial records exfiltrated.",
+          3: "Mitigation active. Automated session revocation deployed. Restoring backup systems.",
+          4: "Sanitization sequence completed. Workstations disinfected. Threat campaign complete."
         }
       };
 
@@ -800,7 +810,8 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
     englishVoices.forEach(voice => {
       const option = document.createElement("option");
       option.value = voice.name;
-      option.textContent = `${voice.name} (${voice.lang})`;
+      const shortName = voice.name.length > 10 ? voice.name.substring(0, 10) + "..." : voice.name;
+      option.textContent = shortName;
       
       if (voice.name === this.selectedVoiceName) {
         option.selected = true;
@@ -850,7 +861,7 @@ Provide a highly concise, 2 to 3 sentence tactical threat analysis for command o
         const btn = document.getElementById(`ctrl-phase-${ph.id}`);
         if (btn) {
           btn.style.pointerEvents = "none";
-          btn.style.opacity = "0.3";
+          btn.style.opacity = "0.65";
         }
       });
 

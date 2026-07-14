@@ -1,0 +1,128 @@
+{
+  "0": {
+    "0": {
+      "question": "Which Enterprise AD baseline configuration should be initiated?",
+      "choices": [
+        { "text": "Standard Active Directory Domain Telemetry", "desc": "Monitor LDAP queries, kerberos ticket logs and standard DNS resolution." },
+        { "text": "High-Frequency RDP/SMB Logging Audit", "desc": "Enable aggressive security event log sampling on the Primary Domain Controller." },
+        { "text": "Internal Kerberos Ticket Auditing check", "desc": "Verify TGT/TGS issuance parameters and domain trust status." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "Domain Controller SMB Port Scan (445)", "desc": "Perform network scan to locate open directory share interfaces." },
+        { "text": "Kerberoasting & Ticket Harvesting", "desc": "Extract service account ticket hashes from memory for offline cracking." },
+        { "text": "Spear-Phishing to IT Admin Staff", "desc": "Send crafted software update notification to harvest domain admin credentials." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "Cryptolocker Ransomware (Lock AD Database)", "desc": "Deploy locker payload via GPO to encrypt NTDS.dit database." },
+        { "text": "Pass-the-Hash Domain Admin Compromise", "desc": "Use hijacked hashes to authenticate to the Domain Controller." },
+        { "text": "Domain Controller GPO Policy Hijack", "desc": "Push rogue firewall policies to block administrative channels." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "SOAR Automated Domain Controller VLAN Isolation", "desc": "Quarantine the primary Domain Controller VLAN 20 and lock firewalls." },
+        { "text": "Deploy AD Honeypot Decoys & Sinkhole Traffic", "desc": "Spin up fake LDAP/Kerberos targets to intercept malicious queries." },
+        { "text": "Revoke Compromised Domain Admin Accounts", "desc": "Instantly disable hijacked accounts and force Kerberos key rotation." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Clear Forensic Logs & Rotate Threat Indices", "desc": "Archive security incident files and reset tracking variables." },
+        { "text": "Restore NTDS Database from Offline Backup", "desc": "Revert Domain Controller database to clean snapshot copy." },
+        { "text": "Enforce Multi-Factor Authentication (MFA)", "desc": "Harden domain access control list and activate MFA enforcement." }
+      ]
+    }
+  },
+  "1": {
+    "0": {
+      "question": "Which E-Commerce baseline configuration should be initiated?",
+      "choices": [
+        { "text": "E-Commerce Web Portal Traffic Monitor", "desc": "Audit API server metrics, HTTP request rates, and log queues." },
+        { "text": "Cloud Database Query Latency Scan", "desc": "Monitor SQL read/write speeds and database connection counts." },
+        { "text": "Edge Content Delivery Network (CDN) Audit", "desc": "Verify cache rules, WAF logs, and SSL/TLS cipher suites." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "SQL Injection Vulnerability Scanner (sqlmap)", "desc": "Launch automated query scan against dynamic HTTP endpoints." },
+        { "text": "Web Directory Brute-Force (dirb)", "desc": "Scan API base paths to identify unauthenticated backend directories." },
+        { "text": "Credential Stuffing on Customer Login", "desc": "Test leaked database credentials against the web portal login API." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "SQL Injection Schema Exfiltration (UNION Select)", "desc": "Inject SQL payload to dump user credentials and credit card records." },
+        { "text": "Remote Command Execution (RCE) via File Upload", "desc": "Bypass extension filter to upload web shell to API upload directory." },
+        { "text": "API Query Denial of Service (Database Lockout)", "desc": "Inject complex sleeping queries to saturate database connection pool." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "WAF Rule Block & API Subnet Quarantine", "desc": "Activate Web Application Firewall rules and block attacker's IP subnet." },
+        { "text": "Deploy Decoy SQL API Endpoint Honeypot", "desc": "Reroute SQL injection payloads to a simulated mock database container." },
+        { "text": "Invalidate Session JWTs & Enable API Rate Limits", "desc": "Revoke compromised tokens and enforce request rate limits." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Purge Web Shell Registry & Audit WAF Logs", "desc": "Erase malicious files, rotate web credentials, and audit API routes." },
+        { "text": "Restore SQL database from AWS Cloud Backup", "desc": "Spin up a clean snapshot copy of the database." },
+        { "text": "Patch SQL Injection & Implement Parameterized Queries", "desc": "Rewrite vulnerable API code to use prepared SQL statements." }
+      ]
+    }
+  },
+  "2": {
+    "0": {
+      "question": "Which Mail Server baseline configuration should be initiated?",
+      "choices": [
+        { "text": "Corporate Mail Server Telemetry Loop", "desc": "Monitor incoming/outgoing SMTP traffic and mail routing logs." },
+        { "text": "Executive Workstation Endpoint Audit", "desc": "Check active login sessions and verify security agent statuses." },
+        { "text": "External Secure Email Gateway Integrity Scan", "desc": "Verify spam filters, SPF, DKIM, and DMARC alignments." }
+      ]
+    },
+    "1": {
+      "question": "What type of attack you want to execute?",
+      "choices": [
+        { "text": "Spear-Phishing Campaign (Macro Attachment)", "desc": "Deliver invoice email with embedded VBA macro to accounting staff." },
+        { "text": "OAuth Session Hijack & Token Exfiltration", "desc": "Deceive administrator to authorize rogue third-party API application." },
+        { "text": "Credential Stuffing targeting OWA Portal", "desc": "Pivot through Outlook Web Access portal using generic employee credentials." }
+      ]
+    },
+    "2": {
+      "question": "Which exploit mechanism should be deployed?",
+      "choices": [
+        { "text": "Ransomware Delivery & Executive Lockout", "desc": "Upload malicious payload to encrypt workstation registry and database backups." },
+        { "text": "Session Hijack & Invoice Fraud Execution", "desc": "Steal active mail session cookies to execute fraudulent wire transfer orders." },
+        { "text": "Mail Forwarding Rules Setup & Exfiltration", "desc": "Configure silent redirect rule to copy executive mail folders to external domain." }
+      ]
+    },
+    "3": {
+      "question": "How do we defend the system now?",
+      "choices": [
+        { "text": "Workstation Endpoint Containment & SMB Block", "desc": "Isolate compromised receptionist PC and lock SMB network ports." },
+        { "text": "Host Quarantine & Session Invalidation", "desc": "Quarantine infected laptop and revoke active JWT session tokens." },
+        { "text": "Revoke Email Session Certificates & Account Freeze", "desc": "Disable compromised email credentials and block outbound SMTP mail." }
+      ]
+    },
+    "4": {
+      "question": "How should the security team conclude the incident response?",
+      "choices": [
+        { "text": "Purge Malicious Forwarding Rules & Harden Email Ports", "desc": "Clean mailbox rules, patch OS flaws, and audit SMTP connections." },
+        { "text": "Restore Executive Workstation from Clean Image", "desc": "Re-flash hijacked OS using golden image backups." },
+        { "text": "Implement Phishing Filtering & SPF/DKIM Updates", "desc": "Apply stricter spam-filter parameters and update DNS MX keys." }
+      ]
+    }
+  }
+}

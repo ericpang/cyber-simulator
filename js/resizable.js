@@ -3,43 +3,54 @@
  * Implements smooth vertical and horizontal resizes for flex grid panels
  */
 
-document.addEventListener("DOMContentLoaded", () => {
+console.log("resizable.js loaded, readyState:", document.readyState);
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initResizers();
+  });
+} else {
   initResizers();
-});
+}
 
 function initResizers() {
-  // 1. Horizontal Splitters (Resizing columns side-by-side)
   const vResizers = document.querySelectorAll(".resizer-v");
+  const hResizers = document.querySelectorAll(".resizer-h");
+  console.log("initResizers called. Found vResizers:", vResizers.length, "hResizers:", hResizers.length);
+
   vResizers.forEach(resizer => {
     const leftPanel = resizer.previousElementSibling;
-    const rightPanel = resizer.nextElementSibling;
 
     resizer.addEventListener("mousedown", (e) => {
       e.preventDefault();
+      console.log("Resizer mousedown triggered on element:", resizer, "at X:", e.clientX);
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
 
       const startX = e.clientX;
       const startLeftWidth = leftPanel.getBoundingClientRect().width;
-      const startRightWidth = rightPanel.getBoundingClientRect().width;
-      const totalWidth = startLeftWidth + startRightWidth;
+      const containerWidth = leftPanel.parentElement.getBoundingClientRect().width;
+      console.log("startLeftWidth:", startLeftWidth, "containerWidth:", containerWidth);
 
       const onMouseMove = (moveEvent) => {
         const deltaX = moveEvent.clientX - startX;
         let newLeftWidth = startLeftWidth + deltaX;
-        let leftPercent = (newLeftWidth / totalWidth) * 100;
-        let rightPercent = 100 - leftPercent;
+        let leftPercent = (newLeftWidth / containerWidth) * 100;
+        console.log("mousemove - deltaX:", deltaX, "newLeftWidth:", newLeftWidth, "leftPercent:", leftPercent);
 
         // Apply limits (min 15%, max 85%)
         if (leftPercent >= 15 && leftPercent <= 85) {
           leftPanel.style.width = `${leftPercent}%`;
-          rightPanel.style.width = `${rightPercent}%`;
+          console.log("Applied leftPanel.style.width:", leftPanel.style.width);
           // Force layout recalculations (SVG maps & charts)
           window.dispatchEvent(new Event("resize"));
+        } else {
+          console.log("leftPercent out of bounds [15, 85]:", leftPercent);
         }
       };
 
       const onMouseUp = () => {
+        console.log("Resizer mouseup triggered");
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
         document.removeEventListener("mousemove", onMouseMove);
@@ -52,10 +63,8 @@ function initResizers() {
   });
 
   // 2. Vertical Splitters (Resizing rows stacked vertically)
-  const hResizers = document.querySelectorAll(".resizer-h");
   hResizers.forEach(resizer => {
     const topPanel = resizer.previousElementSibling;
-    const bottomPanel = resizer.nextElementSibling;
 
     resizer.addEventListener("mousedown", (e) => {
       e.preventDefault();
@@ -64,19 +73,16 @@ function initResizers() {
 
       const startY = e.clientY;
       const startTopHeight = topPanel.getBoundingClientRect().height;
-      const startBottomHeight = bottomPanel.getBoundingClientRect().height;
-      const totalHeight = startTopHeight + startBottomHeight;
+      const containerHeight = topPanel.parentElement.getBoundingClientRect().height;
 
       const onMouseMove = (moveEvent) => {
         const deltaY = moveEvent.clientY - startY;
         let newTopHeight = startTopHeight + deltaY;
-        let topPercent = (newTopHeight / totalHeight) * 100;
-        let bottomPercent = 100 - topPercent;
+        let topPercent = (newTopHeight / containerHeight) * 100;
 
         // Apply limits (min 20%, max 80%)
         if (topPercent >= 20 && topPercent <= 80) {
           topPanel.style.height = `${topPercent}%`;
-          bottomPanel.style.height = `${bottomPercent}%`;
           // Force layout recalculations
           window.dispatchEvent(new Event("resize"));
         }

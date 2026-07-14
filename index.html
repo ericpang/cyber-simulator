@@ -54,7 +54,7 @@
           <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
         </span>
         <div>
-          <h1 class="text-sm font-extrabold tracking-[0.2em] text-neutral-100 font-mono">SMART CITY CYBER RANGE SIMULATION</h1>
+          <h1 id="main-title" class="text-sm font-extrabold tracking-[0.2em] text-neutral-100 font-mono">SMART CITY CYBER RANGE SIMULATION</h1>
           <p class="text-[10px] text-neutral-500 font-mono tracking-wider">ICC WIDESCREEN COMMAND EDITION v2.10</p>
         </div>
       </div>
@@ -108,7 +108,7 @@
           <div class="flex items-center bg-neutral-950 border border-neutral-800 p-0.5 rounded shrink-0">
             <label class="flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded font-mono text-[10px] text-neutral-400 hover:text-neutral-300 transition select-none">
               <input id="ctrl-interactive-toggle" type="checkbox" checked class="w-3.5 h-3.5 accent-blue-500 cursor-pointer" />
-              <span>INTERACTIVE PROMPTS</span>
+              <span>INTERACTIVE</span>
             </label>
           </div>
 
@@ -116,7 +116,7 @@
           <div class="flex items-center bg-neutral-950 border border-neutral-800 p-0.5 rounded shrink-0">
             <label class="flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded font-mono text-[10px] text-neutral-400 hover:text-neutral-300 transition select-none">
               <input id="ctrl-ctf-toggle" type="checkbox" class="w-3.5 h-3.5 accent-red-500 cursor-pointer" />
-              <span>CTF MODE</span>
+              <span>CTF</span>
             </label>
           </div>
 
@@ -135,9 +135,9 @@
           
           <!-- Speed Factor -->
           <div class="flex rounded bg-neutral-950 border border-neutral-800 p-0.5">
-            <button id="ctrl-speed-1x" type="button" class="px-2 py-1.5 rounded bg-blue-500/10 border border-blue-500/40 text-blue-400 font-mono text-[10px] glow-border-blue transition">1X</button>
-            <button id="ctrl-speed-5x" type="button" class="px-2 py-1.5 rounded text-neutral-500 font-mono text-[10px] hover:text-neutral-300 transition">5X</button>
-            <button id="ctrl-speed-10x" type="button" class="px-2 py-1.5 rounded text-neutral-500 font-mono text-[10px] hover:text-neutral-300 transition">10X</button>
+            <button id="ctrl-speed-1x" type="button" class="px-2 py-1.5 rounded bg-blue-500/25 border border-blue-400/60 text-blue-200 font-mono text-[10px] glow-border-blue transition">1X</button>
+            <button id="ctrl-speed-5x" type="button" class="px-2 py-1.5 rounded text-neutral-400 font-mono text-[10px] hover:text-neutral-200 transition">5X</button>
+            <button id="ctrl-speed-10x" type="button" class="px-2 py-1.5 rounded text-neutral-400 font-mono text-[10px] hover:text-neutral-200 transition">10X</button>
           </div>
         </div>
       </div>
@@ -151,9 +151,9 @@
     <!-- MAIN CONTAINER GRID (CONVERTED TO FLEX FOR ADJUSTABLE SIZE PANELS) -->
     <main class="flex-1 flex flex-col p-4 gap-1 overflow-hidden min-h-0">
       
-      <div id="dashboard-top-row" class="flex flex-row min-h-0 w-full" style="height: 50%;">
+      <div id="dashboard-top-row" class="flex flex-row min-h-0 w-full" style="height: calc(50% - 8px);">
         <!-- PANEL 1 CONTAINER WRAPPER -->
-        <div id="panel-attacker-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 50%;">
+        <div id="panel-attacker-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: calc(50% - 8px);">
           <!-- SCENARIO SELECTOR BAR (Above Panel 1) -->
           <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
             <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">ACTIVE CAMPAIGN:</span>
@@ -185,10 +185,10 @@
         <div class="resizer-v mx-1.5 rounded"></div>
 
         <!-- PANEL 2 CONTAINER WRAPPER -->
-        <div id="panel-map-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 50%;">
+        <div id="panel-map-wrapper" class="flex-1 flex flex-col gap-3 min-w-0 overflow-hidden">
           <!-- TOP HUD DECORATION FOR MAP -->
           <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
-            <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">MUNICIPAL RADAR SCANNER:</span>
+            <span id="radar-title" class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">MUNICIPAL RADAR SCANNER:</span>
             <span class="text-[9px] font-mono text-green-400 glow-text-green font-bold animate-pulse font-mono">ONLINE · MONITORING ALL SUB-VLAN VECTORS</span>
           </div>
 
@@ -198,7 +198,7 @@
             <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
               <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 2 // MUNICIPAL TELEMETRY GRID</h2>
+                <h2 id="map-title" class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 2 // MUNICIPAL TELEMETRY GRID</h2>
               </div>
               <span class="text-[9px] font-mono text-neutral-500">TOPOLOGY: INLINE_SVG</span>
             </div>
@@ -214,7 +214,7 @@
       <div class="resizer-h my-1.5 rounded"></div>
 
       <!-- PANEL 3: THE SIEM ANALYTICS BOARD -->
-      <section id="panel-siem-wrapper" class="bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl" style="height: 50%;">
+      <section id="panel-siem-wrapper" class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl min-h-0">
         <!-- Panel Header -->
         <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2">
@@ -223,12 +223,12 @@
           </div>
           <!-- Quick Phase Jumper Bar -->
           <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
-            <span class="text-[9px] font-mono text-neutral-600 px-2 uppercase shrink-0 font-bold">PHASE OVERRIDE:</span>
-            <button id="ctrl-phase-0" type="button" class="px-2.5 py-1 rounded text-blue-400 font-mono text-[9px] transition bg-blue-500/10 border border-blue-500/40 glow-border-blue font-bold">PHASE 0: BASELINE</button>
-            <button id="ctrl-phase-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">PHASE 1: RECON</button>
-            <button id="ctrl-phase-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">PHASE 2: EXPLOIT</button>
-            <button id="ctrl-phase-3" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">PHASE 3: DEFENSE</button>
-            <button id="ctrl-phase-4" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-500 border border-transparent">PHASE 4: CLEANSE</button>
+            <span class="text-[9px] font-mono text-neutral-400 px-2 uppercase shrink-0 font-bold">PHASE OVERRIDE:</span>
+            <button id="ctrl-phase-0" type="button" class="px-2.5 py-1 rounded text-blue-200 font-mono text-[9px] transition bg-blue-500/25 border border-blue-400/60 glow-border-blue font-bold">PHASE 0: BASELINE</button>
+            <button id="ctrl-phase-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 1: RECON</button>
+            <button id="ctrl-phase-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 2: EXPLOIT</button>
+            <button id="ctrl-phase-3" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 3: DEFENSE</button>
+            <button id="ctrl-phase-4" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 4: CLEANSE</button>
           </div>
         </div>
         
@@ -360,11 +360,60 @@
       </div>
     </div>
 
-    <!-- Project source scripts -->
-    <script src="js/attacker.js?v=102"></script>
-    <script src="js/city-map.js?v=102"></script>
-    <script src="js/siem.js?v=102"></script>
-    <script src="js/app.js?v=102"></script>
-    <script src="js/resizable.js?v=102"></script>
+    <!-- Project source scripts - Dynamically loaded based on settings.json -->
+    <script>
+      (async function() {
+        let otMode = true;
+        try {
+          const response = await fetch('settings.json?v=' + Date.now());
+          if (response.ok) {
+            const settings = await response.json();
+            if (settings.OT_Mode !== undefined) {
+              otMode = settings.OT_Mode;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to load settings.json, defaulting to OT_Mode=true", e);
+        }
+
+        const folder = otMode ? 'campaigns/ot' : 'campaigns/it';
+        console.log(`Loading campaigns from folder: ${folder} (OT_Mode: ${otMode})`);
+
+        // Dynamically update page labels based on campaign mode
+        if (!otMode) {
+          document.title = "Enterprise IT Cyber Range Simulation (Widescreen ICC Edition)";
+          
+          const mainTitle = document.getElementById("main-title");
+          if (mainTitle) mainTitle.textContent = "ENTERPRISE IT CYBER RANGE SIMULATION";
+          
+          const radarTitle = document.getElementById("radar-title");
+          if (radarTitle) radarTitle.textContent = "ENTERPRISE NETWORK SCANNER:";
+          
+          const mapTitle = document.getElementById("map-title");
+          if (mapTitle) mapTitle.textContent = "PANEL 2 // ENTERPRISE NETWORK TOPOLOGY";
+
+          const metaDesc = document.querySelector("meta[name='description']");
+          if (metaDesc) metaDesc.setAttribute("content", "Automated Red vs. Blue cyber range simulation displaying real-time enterprise IT map telemetry, threat logs, and security instrumentation analytics on widescreen displays.");
+        }
+
+        const scripts = [
+          `${folder}/attacker.js`,
+          `${folder}/city-map.js`,
+          `${folder}/siem.js`,
+          `${folder}/app.js`,
+          `js/resizable.js`
+        ];
+
+        for (const src of scripts) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src + '?v=' + Date.now();
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
