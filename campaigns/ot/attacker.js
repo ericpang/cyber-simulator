@@ -392,7 +392,8 @@ class AttackerTerminal {
           { type: 'out', text: '\n[CRITICAL] OVERRIDING ALL METRO SIGNAL LIGHTS TO RED...\n', delay: 250 },
           { type: 'out', text: '[CRITICAL] INTERCEPTING TRACK SWITCH CONTROLS... INJECTING LOOP ERROR\n', delay: 150 },
           { type: 'out', text: '[CRITICAL] RAILWAYS AUTOMATIC EMERGENCY SYSTEM DETECTS LOOP SHUTDOWN\n', delay: 100 },
-          { type: 'out', text: '[!] ALL TRANSIT SIGNALS LOCK STATE: LOCKED [FAIL]\n', delay: 200 }
+          { type: 'out', text: '[!] ALL TRANSIT SIGNALS LOCK STATE: LOCKED [FAIL]\n', delay: 200 },
+          { type: 'out', text: '[!] SECURITY CONTAINMENT: Attacker VPN session status REVOKED.\n', delay: 100 }
         );
         break;
 
@@ -537,7 +538,8 @@ class AttackerTerminal {
           { type: 'out', text: '[!] CRYPTOLOCKER: ENCRYPTING C:\\Users\\*\\Documents... Appending extension .cryptolocker [OK]\n', delay: 150 },
           { type: 'out', text: '[!] CRYPTOLOCKER: LOCKING HVAC VENTILATION SYSTEM REGISTERS... [OK]\n', delay: 150 },
           { type: 'out', text: '[!] CRYPTOLOCKER: PATIENT TELEMETRY DATA ENCRYPTED. COMPROMISED.\n', delay: 100 },
-          { type: 'out', text: '[!] RANSOM NOTE INJECTED: RANSOM_DECRYPT.txt COPIED TO DESKTOP.\n', delay: 200 }
+          { type: 'out', text: '[!] RANSOM NOTE INJECTED: RANSOM_DECRYPT.txt COPIED TO DESKTOP.\n', delay: 200 },
+          { type: 'out', text: '[i] Recovery Directive: Re-flash compromised consoles with GOLDEN_IMAGE profile.\n', delay: 100 }
         );
         break;
 

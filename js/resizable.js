@@ -99,4 +99,84 @@ function initResizers() {
       document.addEventListener("mouseup", onMouseUp);
     });
   });
+
+  // 3. Panel Maximize / Expand & Dock Back on Double-Click
+  initPanelMaximize();
 }
+
+function togglePanelMaximize(panel) {
+  const isExpanded = panel.classList.contains("panel-expanded");
+
+  // Dock any currently expanded panel first
+  document.querySelectorAll(".dashboard-panel.panel-expanded").forEach(p => {
+    p.classList.remove("panel-expanded");
+    const hint = p.querySelector(".panel-dock-hint");
+    if (hint) hint.remove();
+  });
+
+  if (!isExpanded) {
+    // Expand panel out to occupy full 5 panels area
+    panel.classList.add("panel-expanded");
+
+    const hint = document.createElement("div");
+    hint.className = "panel-dock-hint font-mono text-[10px] text-blue-400 bg-blue-950/80 border border-blue-500/40 px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-lg select-none cursor-pointer transition hover:bg-blue-900/90";
+    hint.innerHTML = `<svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg> <span>DOUBLE-CLICK OR ESC TO DOCK BACK</span>`;
+
+    hint.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      togglePanelMaximize(panel);
+    });
+    panel.appendChild(hint);
+  }
+
+  // Trigger resize for SVG maps & canvas charts
+  window.dispatchEvent(new Event("resize"));
+}
+
+function initPanelMaximize() {
+  const panels = document.querySelectorAll(".dashboard-panel");
+  console.log("initPanelMaximize initialized on", panels.length, "panels.");
+
+  panels.forEach(panel => {
+    panel.setAttribute("title", "Double-click to expand / dock panel");
+
+    // Click handler for header expand buttons
+    const btn = panel.querySelector(".panel-expand-btn");
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        togglePanelMaximize(panel);
+      });
+    }
+
+    panel.addEventListener("dblclick", (e) => {
+      // Ignore interactive controls or resizers
+      if (e.target.closest("button, input, select, textarea, a, option, label, .resizer-v, .resizer-h, .panel-dock-hint")) {
+        return;
+      }
+
+      e.stopPropagation();
+
+      // Clear any text selection automatically created by browser double click
+      if (window.getSelection) {
+        try {
+          window.getSelection().removeAllRanges();
+        } catch (err) {}
+      }
+
+      togglePanelMaximize(panel);
+    });
+  });
+
+  // Global ESC key listener to dock back any expanded panel
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const expandedPanel = document.querySelector(".dashboard-panel.panel-expanded");
+      if (expandedPanel) {
+        togglePanelMaximize(expandedPanel);
+      }
+    }
+  });
+}
+
+

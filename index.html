@@ -153,7 +153,7 @@
       
       <div id="dashboard-top-row" class="flex flex-row min-h-0 w-full" style="height: calc(50% - 8px);">
         <!-- PANEL 1 CONTAINER WRAPPER -->
-        <div id="panel-attacker-wrapper" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: calc(50% - 8px);">
+        <div id="panel-attacker-wrapper" class="dashboard-panel flex flex-col gap-3 min-h-0 overflow-hidden" style="width: calc(50% - 8px);">
           <!-- SCENARIO SELECTOR BAR (Above Panel 1) -->
           <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
             <span class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">ACTIVE CAMPAIGN:</span>
@@ -172,7 +172,12 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
                 <h2 id="panel-attacker-title" class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 1 // THREAT PROPAGATION SYSTEM</h2>
               </div>
-              <span class="text-[9px] font-mono text-neutral-500">TTY: /dev/pts/88</span>
+              <div class="flex items-center gap-3">
+                <span class="text-[9px] font-mono text-neutral-500">TTY: /dev/pts/88</span>
+                <button type="button" class="panel-expand-btn p-1 rounded hover:bg-neutral-800 text-neutral-400 hover:text-blue-400 transition" title="Expand / Dock Panel">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                </button>
+              </div>
             </div>
             <!-- Terminal Body -->
             <div class="flex-1 p-4 bg-black/85 overflow-y-auto custom-scrollbar select-text crt-screen">
@@ -185,7 +190,7 @@
         <div class="resizer-v mx-1.5 rounded"></div>
 
         <!-- PANEL 2 CONTAINER WRAPPER -->
-        <div id="panel-map-wrapper" class="flex-1 flex flex-col gap-3 min-w-0 overflow-hidden">
+        <div id="panel-map-wrapper" class="dashboard-panel flex-1 flex flex-col gap-3 min-w-0 overflow-hidden">
           <!-- TOP HUD DECORATION FOR MAP -->
           <div class="h-10 bg-neutral-900/60 border border-neutral-800 px-4 rounded-lg flex items-center justify-between shrink-0">
             <span id="radar-title" class="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">MUNICIPAL RADAR SCANNER:</span>
@@ -200,7 +205,12 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                 <h2 id="map-title" class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 2 // MUNICIPAL TELEMETRY GRID</h2>
               </div>
-              <span class="text-[9px] font-mono text-neutral-500">TOPOLOGY: INLINE_SVG</span>
+              <div class="flex items-center gap-3">
+                <span class="text-[9px] font-mono text-neutral-500">TOPOLOGY: INLINE_SVG</span>
+                <button type="button" class="panel-expand-btn p-1 rounded hover:bg-neutral-800 text-neutral-400 hover:text-blue-400 transition" title="Expand / Dock Panel">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                </button>
+              </div>
             </div>
             <!-- Map Canvas Body -->
             <div id="city-map-container" class="flex-1 overflow-hidden relative min-h-0 bg-neutral-950/60">
@@ -214,21 +224,26 @@
       <div class="resizer-h my-1.5 rounded"></div>
 
       <!-- PANEL 3: THE SIEM ANALYTICS BOARD -->
-      <section id="panel-siem-wrapper" class="flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl min-h-0">
+      <section id="panel-siem-wrapper" class="dashboard-panel flex-1 bg-neutral-900/20 border border-neutral-800/80 rounded-lg flex flex-col overflow-hidden shadow-2xl min-h-0">
         <!-- Panel Header -->
         <div class="h-10 bg-neutral-900/60 border-b border-neutral-850 px-4 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             <h2 class="text-xs font-bold uppercase tracking-wider text-neutral-300 font-mono">PANEL 3 // SIEM EVENTS & THREAT DEEP INSTRUMENTATION</h2>
           </div>
-          <!-- Quick Phase Jumper Bar -->
-          <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
-            <span class="text-[9px] font-mono text-neutral-400 px-2 uppercase shrink-0 font-bold">PHASE OVERRIDE:</span>
-            <button id="ctrl-phase-0" type="button" class="px-2.5 py-1 rounded text-blue-200 font-mono text-[9px] transition bg-blue-500/25 border border-blue-400/60 glow-border-blue font-bold">PHASE 0: BASELINE</button>
-            <button id="ctrl-phase-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 1: RECON</button>
-            <button id="ctrl-phase-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 2: EXPLOIT</button>
-            <button id="ctrl-phase-3" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 3: DEFENSE</button>
-            <button id="ctrl-phase-4" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 4: CLEANSE</button>
+          <div class="flex items-center gap-3">
+            <!-- Quick Phase Jumper Bar -->
+            <div class="flex items-center gap-1 bg-neutral-950 p-0.5 rounded border border-neutral-850">
+              <span class="text-[9px] font-mono text-neutral-400 px-2 uppercase shrink-0 font-bold">PHASE OVERRIDE:</span>
+              <button id="ctrl-phase-0" type="button" class="px-2.5 py-1 rounded text-blue-200 font-mono text-[9px] transition bg-blue-500/25 border border-blue-400/60 glow-border-blue font-bold">PHASE 0: BASELINE</button>
+              <button id="ctrl-phase-1" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 1: RECON</button>
+              <button id="ctrl-phase-2" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 2: EXPLOIT</button>
+              <button id="ctrl-phase-3" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 3: DEFENSE</button>
+              <button id="ctrl-phase-4" type="button" class="px-2.5 py-1 rounded hover:bg-neutral-900 hover:text-neutral-200 transition font-mono text-[9px] text-neutral-400 border border-transparent">PHASE 4: CLEANSE</button>
+            </div>
+            <button type="button" class="panel-expand-btn p-1 rounded hover:bg-neutral-800 text-neutral-400 hover:text-blue-400 transition" title="Expand / Dock Panel">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+            </button>
           </div>
         </div>
         
@@ -236,7 +251,7 @@
         <div class="flex-1 p-4 flex flex-row gap-1 min-h-0 select-text w-full">
           
           <!-- Column section A+B: Combined Metrics, Gauge, and EPS chart -->
-          <div id="siem-metrics-col" class="flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 33.33%;">
+          <div id="siem-metrics-col" class="dashboard-panel flex flex-col gap-3 min-h-0 overflow-hidden" style="width: 33.33%;">
             <!-- Numerical Metrics & Radial Threat Gauge -->
             <div class="bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex gap-4 items-center justify-between shrink-0">
               <!-- Numerical Metrics -->
@@ -274,7 +289,7 @@
           <div class="resizer-v mx-1.5 rounded"></div>
 
           <!-- Column section C: Live alerts log ticker -->
-          <div id="siem-ticker-col" class="bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0" style="width: 33.33%;">
+          <div id="siem-ticker-col" class="dashboard-panel bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0" style="width: 33.33%;">
             <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-2 flex items-center justify-between">
               <span>LIVE SIEM EVENT STREAM</span>
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -288,7 +303,8 @@
           <div class="resizer-v mx-1.5 rounded"></div>
 
           <!-- Column section D: AI Tactical Co-Pilot / CTF Console wrapper -->
-          <div id="siem-copilot-col" class="flex flex-col min-h-0" style="width: 33.33%;">
+          <div id="siem-copilot-col" class="dashboard-panel flex flex-col min-h-0" style="width: 33.33%;">
+
             <!-- AI Tactical Co-Pilot -->
             <div id="ai-copilot-container" class="flex-1 bg-neutral-900/30 border border-neutral-900 p-3 rounded-lg flex flex-col min-h-0 select-text">
               <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
