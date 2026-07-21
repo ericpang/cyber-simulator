@@ -376,24 +376,65 @@
       </div>
     </div>
 
-    <!-- Project source scripts - Dynamically loaded based on settings.json -->
+    <!-- Project source scripts - Dynamically loaded based on .env -->
     <script>
-      (async function() {
-        let otMode = true;
+      // Helper function to load and parse .env configuration
+      async function loadEnv() {
+        const env = {
+          OT_MODE: 'false',
+          AI_AGENT: 'gemini',
+          GEMINI_API_KEY: '',
+          GEMINI_MODEL: 'gemini-2.5-flash',
+          OLLAMA_ENDPOINT: 'http://172.27.120.208:11434/api/generate',
+          OLLAMA_MODEL: 'gemma4:26b'
+        };
         try {
-          const response = await fetch('settings.json?v=' + Date.now());
+          const response = await fetch('.env?v=' + Date.now());
           if (response.ok) {
-            const settings = await response.json();
-            if (settings.OT_Mode !== undefined) {
-              otMode = settings.OT_Mode;
-            }
+            const text = await response.text();
+            text.split(/\r?\n/).forEach(line => {
+              line = line.trim();
+              if (line && !line.startsWith('#')) {
+                const eqIdx = line.indexOf('=');
+                if (eqIdx !== -1) {
+                  const key = line.substring(0, eqIdx).trim();
+                  let val = line.substring(eqIdx + 1).trim();
+                  if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                    val = val.substring(1, val.length - 1);
+                  }
+                  env[key] = val;
+                }
+              }
+            });
           }
         } catch (e) {
-          console.error("Failed to load settings.json, defaulting to OT_Mode=true", e);
+          console.warn("Failed to load .env file, using default parameters", e);
         }
+        return env;
+      }
+
+      (async function() {
+        const env = await loadEnv();
+        window.ENV = env;
+
+        const otModeStr = env.OT_MODE ?? env.OT_Mode;
+        let otMode = otModeStr !== undefined ? (String(otModeStr).toLowerCase() === 'true') : false;
 
         const folder = otMode ? 'campaigns/ot' : 'campaigns/it';
         console.log(`Loading campaigns from folder: ${folder} (OT_Mode: ${otMode})`);
+
+        // Dynamically update model input default based on configured AI_AGENT
+        const modelInput = document.getElementById("ai-model-name");
+        if (modelInput) {
+          const agent = (env.AI_AGENT || 'gemini').toLowerCase();
+          if (agent === 'gemini') {
+            modelInput.value = env.GEMINI_MODEL || 'gemini-2.5-flash';
+            modelInput.placeholder = "GEMINI MODEL";
+          } else {
+            modelInput.value = env.OLLAMA_MODEL || 'gemma4:26b';
+            modelInput.placeholder = "OLLAMA MODEL";
+          }
+        }
 
         // Dynamically update page labels based on campaign mode
         if (!otMode) {

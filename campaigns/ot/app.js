@@ -680,8 +680,9 @@ class AppOrchestrator {
 
     if (!copilotContent) return;
 
-    const modelName = modelInput ? modelInput.value.trim() : "gemma4:26b";
-    
+    const env = window.ENV || {};
+    const aiAgent = (env.AI_AGENT || "gemini").toLowerCase();
+
     if (statusIndicator) {
       statusIndicator.className = "w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse";
     }
@@ -691,7 +692,7 @@ class AppOrchestrator {
       analyzeBtn.className = "px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-500 font-mono text-[8px] transition font-bold shrink-0";
     }
 
-    copilotContent.textContent = "ESTABLISHING TELEMETRY FEED TO LOCAL MODEL...\n";
+    copilotContent.textContent = `ESTABLISHING TELEMETRY FEED TO ${aiAgent.toUpperCase()} AI AGENT...\n`;
 
     const scenarioName = this.scenarios[this.currentScenario].name;
     const phase = this.phases.find(p => p.id === this.currentPhase) || { name: "Unknown", desc: "" };
@@ -712,32 +713,72 @@ Active Logs: ${logsStr}
 Provide a highly concise, 2 to 3 sentence tactical threat analysis for command operators. Suggest a direct security defense recommendation. Output plain text only. Do not output markdown, asterisks, bullet points, prefix text, or conversational intro. Be direct and professional.`;
 
     try {
-      const response = await fetch("http://172.27.120.208:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: modelName,
-          prompt: prompt,
-          stream: false
-        })
-      });
+      if (aiAgent === "gemini") {
+        const apiKey = env.GEMINI_API_KEY || "";
+        const modelName = (modelInput && modelInput.value.trim()) ? modelInput.value.trim() : (env.GEMINI_MODEL || "gemini-2.5-flash");
 
-      if (!response.ok) {
-        throw new Error(`Ollama returned status ${response.status}`);
-      }
+        if (!apiKey) {
+          const configMsg = `[CONFIGURATION REQUIRED] GEMINI API KEY MISSING\n\nPlease add your GEMINI_API_KEY to the .env file:\n\n1. Open .env in project root\n2. Set: GEMINI_API_KEY=your_api_key_here\n3. Reload the application and click ANALYZE.\n\n(Fallback analysis template):\n- Threat activity detected in phase: ${phase.name}\n- Incident response posture: Monitor logs for ${scenarioName}.\n- Recommended action: Validate PLC/SCADA telemetric baselines immediately.`;
+          copilotContent.textContent = configMsg;
+          if (statusIndicator) {
+            statusIndicator.className = "w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_4px_#f59e0b]";
+          }
+          return;
+        }
 
-      const data = await response.json();
-      const aiResponse = data.response || "No response received from local LLM.";
-      
-      this.typewriteText(copilotContent, `[AI ADVICE]: ${aiResponse}`);
-      
-      if (statusIndicator) {
-        statusIndicator.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-ping";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: prompt }]
+            }]
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.text();
+          throw new Error(`Gemini API error ${response.status}: ${errData}`);
+        }
+
+        const data = await response.json();
+        const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const aiResponse = candidate || "No response received from Gemini API.";
+
+        this.typewriteText(copilotContent, `[GEMINI AI ADVICE]: ${aiResponse}`);
+        if (statusIndicator) {
+          statusIndicator.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-ping";
+        }
+      } else {
+        const endpoint = env.OLLAMA_ENDPOINT || "http://172.27.120.208:11434/api/generate";
+        const modelName = (modelInput && modelInput.value.trim()) ? modelInput.value.trim() : (env.OLLAMA_MODEL || "gemma4:26b");
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: modelName,
+            prompt: prompt,
+            stream: false
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ollama returned status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiResponse = data.response || "No response received from local LLM.";
+        
+        this.typewriteText(copilotContent, `[OLLAMA AI ADVICE]: ${aiResponse}`);
+        if (statusIndicator) {
+          statusIndicator.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-ping";
+        }
       }
     } catch (err) {
-      console.warn("Ollama AI Agent connection failed:", err);
-      
-      const errorMsg = `[OFFLINE] LOCAL AGENT OFFLINE\n\nFailed to reach Ollama at http://172.27.120.208:11434/api/generate.\n\nTo enable this panel:\n1. Install Ollama on host 172.27.120.208 and pull your model:\n   > ollama pull ${modelName}\n2. Set environment variable for CORS origins on that host:\n   $env:OLLAMA_ORIGINS="*"\n3. Run Ollama serve binding to the network interface:\n   > ollama serve --host 0.0.0.0\n\n(Fallback analysis template):\n- Campaign status is abnormal.\n- Threat levels are elevated for ${scenarioName}.\n- Recommended action: Verify and isolate critical subnet paths immediately.`;
+      console.warn("AI Agent connection failed:", err);
+      const errorMsg = `[OFFLINE] AI AGENT OFFLINE (${aiAgent.toUpperCase()})\n\nDetails: ${err.message}\n\n(Fallback analysis template):\n- Campaign status is abnormal.\n- Threat levels are elevated for ${scenarioName}.\n- Recommended action: Verify and isolate critical subnet paths immediately.`;
       
       copilotContent.textContent = errorMsg;
       if (statusIndicator) {

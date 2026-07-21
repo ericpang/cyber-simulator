@@ -27,7 +27,7 @@ All campaign-specific logic, styling updates, maps, and logs are segregated into
 
 ```bash
 ├── index.html                  # Core HTML structure & dynamic campaign bootstrapper
-├── settings.json               # Config file setting OT_Mode (true = OT campaigns, false = IT campaigns)
+├── .env                        # Config file setting OT_MODE, AI_AGENT, GEMINI_API_KEY, and OLLAMA endpoints
 ├── css/
 │   └── custom.css              # Custom neon glows, scanlines, CRT screen, and layouts
 ├── js/
@@ -59,16 +59,26 @@ All campaign-specific logic, styling updates, maps, and logs are segregated into
 
 ## ⚙️ Configuration & Modes Selection
 
-The cyber range is configured via the root-level [settings.json](settings.json) file:
+The cyber range is configured via the root-level `.env` file:
 
-```json
-{
-  "OT_Mode": true
-}
+```env
+# Campaign Mode (true = OT campaigns, false = IT campaigns)
+OT_MODE=false
+
+# AI Agent Provider (options: gemini, ollama)
+AI_AGENT=gemini
+
+# Google Gemini AI Agent Configuration
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+
+# Local Ollama AI Agent Configuration
+OLLAMA_ENDPOINT=http://172.27.120.208:11434/api/generate
+OLLAMA_MODEL=gemma4:26b
 ```
 
-- **`OT_Mode = true`**: Activates the **Smart City Cyber Range Simulation** (Power Grid, Transit, Hospital).
-- **`OT_Mode = false`**: Activates the **Enterprise IT Cyber Range Simulation** (Active Directory Domain Ransomware, Cloud E-Commerce DB Exfiltration, Corporate BEC Phishing).
+- **`OT_MODE = true`**: Activates the **Smart City Cyber Range Simulation** (Power Grid, Transit, Hospital).
+- **`OT_MODE = false`**: Activates the **Enterprise IT Cyber Range Simulation** (Active Directory Domain Ransomware, Cloud E-Commerce DB Exfiltration, Corporate BEC Phishing).
 
 ---
 
@@ -123,18 +133,23 @@ npm install -g http-server
 http-server -p 8000
 ```
 
-### 2. Enable AI Tactical Co-Pilot (Optional)
-To use the live AI analysis feature, ensure Ollama is running and accessible:
-1. Run Ollama on the target host (default config points to `172.27.120.208:11434` or change the URL in `app.js`):
-   ```bash
+### 2. Configure AI Tactical Co-Pilot
+The AI Co-Pilot supports both **Google Gemini** and **Local Ollama** models, configured via `.env`:
+
+#### Option A: Google Gemini (Cloud AI Agent)
+1. Set `AI_AGENT=gemini` in `.env`.
+2. Add your Gemini API key: `GEMINI_API_KEY=your_key_here`.
+3. Set desired model (default: `GEMINI_MODEL=gemini-2.5-flash`).
+
+#### Option B: Local Ollama (Self-Hosted AI Agent)
+1. Set `AI_AGENT=ollama` in `.env`.
+2. Run Ollama on host and enable CORS:
+   ```powershell
+   $env:OLLAMA_ORIGINS="*"
    ollama serve --host 0.0.0.0
    ```
-2. Pull the configured model:
+3. Pull your model:
    ```bash
    ollama pull gemma4:26b
    ```
-3. Enable cross-origin requests for Ollama:
-   ```powershell
-   # Windows PowerShell
-   $env:OLLAMA_ORIGINS="*"
-   ```
+
